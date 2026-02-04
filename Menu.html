@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu | Chicken Curry Messina</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'spice-gold': '#D4AF37',
+            'warm-amber': '#FF8C00',
+            'deep-curry': '#B8860B',
+            'rich-brown': '#8B4513'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-black text-white font-sans">
+
+  <header class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-spice-gold/20">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="text-2xl font-bold text-spice-gold">Chicken Curry</div>
+      <nav class="hidden md:flex space-x-8">
+        <a href="index.html" class="text-gray-300 hover:text-spice-gold">Home</a>
+        <a href="#" class="text-spice-gold font-semibold">Menu</a>
+      </nav>
+      <div class="relative">
+        <button id="cartBtn" class="bg-spice-gold text-black px-5 py-2 rounded-full font-semibold hover:bg-warm-amber">
+          Cart <span id="cartCount" class="ml-1">(0)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-24 pb-32 max-w-7xl mx-auto px-4">
+
+    <section class="text-center mb-20">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6">
+        Explore Our <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Menu</span>
+      </h1>
+      <p class="text-gray-300 max-w-2xl mx-auto">
+        Build your perfect kebab, choose your favorite biryani, and discover rich curries — all made fresh.
+      </p>
+    </section>
+
+    <section id="kebab-builder" class="mb-24">
+      <h2 class="text-3xl font-bold mb-8 text-spice-gold">Build Your Kebab</h2>
+
+      <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-8">
+        <div class="grid md:grid-cols-2 gap-10">
+
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Choose Ingredients</h3>
+            <div id="ingredientList" class="flex flex-wrap gap-3">
+  
+            </div>
+
+            <h3 class="text-xl font-semibold mt-8 mb-4">Choose Sauce</h3>
+            <div id="sauceList" class="flex flex-wrap gap-3">
+            
+            </div>
+
+            <h3 class="text-xl font-semibold mt-8 mb-4">Choose Size</h3>
+            <div id="sizeList" class="flex gap-4">
+          
+            </div>
+          </div>
+
+          <div class="bg-black/50 rounded-2xl p-6 border border-spice-gold/10">
+            <h3 class="text-xl font-semibold mb-4">Your Kebab</h3>
+            <div id="kebabSummary" class="text-gray-300 space-y-2">
+              <p>Select ingredients to build your kebab.</p>
+            </div>
+
+            <div class="mt-6 flex justify-between items-center">
+              <span class="text-lg">Price:</span>
+              <span id="kebabPrice" class="text-2xl font-bold text-spice-gold">€0.00</span>
+            </div>
+
+            <button id="addKebabToCart" class="mt-6 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-black font-bold py-3 rounded-xl hover:scale-105 transition">
+              Add to Cart
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+ 
+    <section id="biryani-section" class="mb-24">
+      <h2 class="text-3xl font-bold mb-8 text-spice-gold">Choose Your Biryani</h2>
+      <div id="biryaniGrid" class="grid md:grid-cols-3 gap-8">
+    
+      </div>
+    </section>
+
+ 
+    <section id="curry-section" class="mb-24">
+      <h2 class="text-3xl font-bold mb-8 text-spice-gold">Choose Your Curry</h2>
+      <div id="curryGrid" class="grid md:grid-cols-3 gap-8">
+      
+      </div>
+    </section>
+
+  </main>
+
+
+  <aside id="cartDrawer" class="fixed right-0 top-0 h-full w-full sm:w-[400px] bg-black border-l border-spice-gold/20 transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+    <div class="p-6">
+    
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-spice-gold">Your Cart</h2>
+        <button onclick="closeCart()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+
+      <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden mb-6">
+        <div id="cartProgress" class="h-full bg-gradient-to-r from-amber-500 to-orange-500 w-0 transition-all duration-300"></div>
+      </div>
+
+      <div id="cartItems" class="space-y-4 mb-6 max-h-[50vh] overflow-y-auto pr-2">
+       
+      </div>
+
+ 
+      <div class="border-t border-spice-gold/20 pt-6">
+        <div class="flex justify-between mb-4">
+          <span class="text-lg">Total:</span>
+          <span id="cartTotal" class="text-2xl font-bold text-spice-gold">€0.00</span>
+        </div>
+        <button id="checkoutBtn" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-black font-bold py-3 rounded-xl hover:scale-105 transition">
+          Pickup Checkout
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div id="overlay" class="fixed inset-0 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300 z-40"></div>
+
+  <div id="toast" class="toast-hide fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-spice-gold text-black px-6 py-3 rounded-full transition-all duration-300 z-50">
+    Added to cart!
+  </div>
+
+
+  <div id="checkoutModal" class="fixed inset-0 bg-black/70 flex items-center justify-center opacity-0 pointer-events-none transition z-50">
+    <div class="bg-gradient-to-br from-gray-900 to-black border border-spice-gold/20 rounded-2xl p-8 w-full max-w-md relative">
+      
+      <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl">×</button>
+      
+      <h2 class="text-2xl font-bold mb-6 text-spice-gold">Pickup Checkout</h2>
+
+      <form id="checkoutForm" class="space-y-4">
+        <div>
+          <label for="customerName" class="text-sm text-gray-400 block mb-1">Name</label>
+          <input id="customerName" type="text" class="w-full bg-black border border-spice-gold/20 rounded-lg px-4 py-2 focus:outline-none focus:border-spice-gold text-white" required />
+          <p id="nameError" class="text-red-400 text-xs hidden mt-1">Name is required</p>
+        </div>
+
+        <div>
+          <label for="customerPhone" class="text-sm text-gray-400 block mb-1">Phone</label>
+          <input id="customerPhone" type="tel" class="w-full bg-black border border-spice-gold/20 rounded-lg px-4 py-2 focus:outline-none focus:border-spice-gold text-white" required />
+          <p id="phoneError" class="text-red-400 text-xs hidden mt-1">Phone is required</p>
+        </div>
+
+        <div>
+          <label for="customerNotes" class="text-sm text-gray-400 block mb-1">Notes (optional)</label>
+          <textarea id="customerNotes" rows="3" class="w-full bg-black border border-spice-gold/20 rounded-lg px-4 py-2 focus:outline-none focus:border-spice-gold text-white resize-none"></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-black font-bold py-3 rounded-xl hover:scale-105 transition">
+          Confirm Pickup Order
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <div id="successModal" class="fixed inset-0 bg-black/70 flex items-center justify-center opacity-0 pointer-events-none transition z-50">
+    <div class="bg-gradient-to-br from-gray-900 to-black border border-spice-gold/20 rounded-2xl p-10 text-center max-w-md">
+      <h2 class="text-3xl font-bold text-spice-gold mb-4">Order Confirmed!</h2>
+      <p class="text-gray-300 mb-6">Your food will be ready for pickup soon 🔥</p>
+      <button onclick="closeSuccess()" class="bg-gradient-to-r from-amber-500 to-orange-500 text-black px-6 py-3 rounded-full font-semibold hover:scale-105 transition">
+        Back to Menu
+      </button>
+    </div>
+  </div>
+
+  <script src="menu.js"></script>
+
+</body>
+</html>
