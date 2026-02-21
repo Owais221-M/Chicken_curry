@@ -1,23 +1,154 @@
 /* ================================
-   Global Transitions
+   Fonts Setup
    ================================ */
-* {
-  transition: all 0.3s ease;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+:root {
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Outfit', sans-serif;
+  --spice-gold: #D4AF37;
+  --warm-amber: #FF8C00;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-serif,
+.font-playfair {
+  font-family: var(--font-heading) !important;
 }
 
 /* ================================
-   Hover Effects
+   Custom Scrollbar
    ================================ */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff8c00;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+/* ================================
+   Global Transitions & Animations
+   ================================ */
+
 .hover-zoom {
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .hover-zoom:hover {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
 .glow:hover {
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.4), 0 0 50px rgba(255, 140, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Subtle Floating Animation */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.float-anim {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Reveal Up Animation */
+@keyframes revealUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-up {
+  opacity: 0;
+  animation: revealUp 0.8s ease-out forwards;
+}
+
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+/* ================================
+   Glassmorphism Effects
+   ================================ */
+.glass {
+  background: rgba(17, 17, 17, 0.95);
+  background: rgba(17, 17, 17, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.glass-card {
+  background: rgba(22, 22, 22, 0.95);
+  background: linear-gradient(145deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.8) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.glass-card:hover {
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: rgba(28, 28, 28, 0.95);
+  background: linear-gradient(145deg, rgba(35, 35, 35, 0.7) 0%, rgba(20, 20, 20, 0.9) 100%);
+  transform: translateY(-5px);
+}
+
+/* ================================
+   Text Gradients
+   ================================ */
+.text-gradient-gold {
+  background: linear-gradient(to right, #D4AF37, #FF8C00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ================================
@@ -35,14 +166,13 @@
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid black;
-  border-top: 2px solid transparent;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top: 2px solid black;
   border-radius: 50%;
   display: inline-block;
   animation: spin 0.6s linear infinite;
 }
 
-/* Spinner Animation */
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -53,46 +183,36 @@
    Toast Notifications
    ================================ */
 #toast {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.toast-show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.toast-hide {
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 /* ================================
    Cart Drawer Animation
    ================================ */
 #cartDrawer {
-  transition: transform 0.3s ease;
-}
-
-/* ================================
-   Glassmorphism Effect
-   ================================ */
-.glass {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1);
 }
 
 /* ================================
    Pulse Animation
    ================================ */
 @keyframes pulse {
-  0%   { transform: scale(1); }
-  50%  { transform: scale(1.08); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
+  }
+
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(212, 175, 55, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+  }
 }
 
 .pulse {
-  animation: pulse 1.5s infinite;
+  animation: pulse 2s infinite;
 }

@@ -21,6 +21,37 @@ SET time_zone = "+00:00";
 -- Database: `chicken_curry_db`
 --
 
+-- Drop existing tables to allow clean re-import
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `order_items`;
+DROP TABLE IF EXISTS `orders`;
+DROP TABLE IF EXISTS `sizes`;
+DROP TABLE IF EXISTS `sauces`;
+DROP TABLE IF EXISTS `menu_items`;
+DROP TABLE IF EXISTS `ingredients`;
+DROP TABLE IF EXISTS `admins`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admins`
+--
+
+CREATE TABLE `admins` (
+  `id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `admins`
+--
+
+INSERT INTO `admins` (`id`, `username`, `password_hash`, `created_at`) VALUES
+(1, 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '2026-02-21 00:00:00'); -- Password is 'password'
+
 -- --------------------------------------------------------
 
 --
@@ -32,6 +63,7 @@ CREATE TABLE `ingredients` (
   `name` varchar(50) NOT NULL,
   `price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `icon` varchar(10) DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -39,13 +71,13 @@ CREATE TABLE `ingredients` (
 -- Dumping data for table `ingredients`
 --
 
-INSERT INTO `ingredients` (`id`, `name`, `price`, `icon`, `is_active`) VALUES
-(1, 'Tomato', 0.50, '🍅', 1),
-(2, 'Onion', 0.30, '🧅', 1),
-(3, 'Lettuce', 0.40, '🥬', 1),
-(4, 'Corn', 0.40, '🌽', 1),
-(5, 'Capsicum', 0.50, '🫑', 1),
-(6, 'Carrot', 0.30, '🥕', 1);
+INSERT INTO `ingredients` (`id`, `name`, `price`, `icon`, `image_url`, `is_active`) VALUES
+(1, 'Tomato', 0.50, '🍅', 'images/tomato.webp', 1),
+(2, 'Onion', 0.30, '🧅', 'images/onion.webp', 1),
+(3, 'Lettuce', 0.40, '🥬', 'images/lettuce.webp', 1),
+(4, 'Corn', 0.40, '🌽', 'images/corn.webp', 1),
+(5, 'Capsicum', 0.50, '🫑', 'images/capsicum.webp', 1),
+(6, 'Carrot', 0.30, '🥕', 'images/carrot.webp', 1);
 
 -- --------------------------------------------------------
 
@@ -62,19 +94,22 @@ CREATE TABLE `menu_items` (
   `prep_time` varchar(50) DEFAULT NULL,
   `spice_level` int(11) DEFAULT 0,
   `is_popular` tinyint(1) DEFAULT 0,
-  `is_active` tinyint(1) DEFAULT 1
+  `is_active` tinyint(1) DEFAULT 1,
+  `is_halal` tinyint(1) DEFAULT 1,
+  `is_gluten_free` tinyint(1) DEFAULT 0,
+  `allergens` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `menu_items`
 --
 
-INSERT INTO `menu_items` (`id`, `name`, `category`, `base_price`, `image_url`, `prep_time`, `spice_level`, `is_popular`, `is_active`) VALUES
-(1, 'Chicken Biryani', 'biryani', 9.00, NULL, '20 min', 2, 1, 1),
-(2, 'Mutton Biryani', 'biryani', 11.00, NULL, '25 min', 3, 0, 1),
-(3, 'Beef Biryani', 'biryani', 10.00, NULL, '22 min', 2, 0, 1),
-(4, 'Chicken Curry', 'curry', 8.00, NULL, '18 min', 2, 1, 1),
-(5, 'Beef Curry', 'curry', 9.50, NULL, '20 min', 3, 0, 1);
+INSERT INTO `menu_items` (`id`, `name`, `category`, `base_price`, `image_url`, `prep_time`, `spice_level`, `is_popular`, `is_active`, `is_halal`, `is_gluten_free`, `allergens`) VALUES
+(1, 'Chicken Biryani', 'biryani', 9.00, 'images/chicken_biryani.webp', '20 min', 2, 1, 1, 1, 0, 'Gluten, Dairy'),
+(2, 'Mutton Biryani', 'biryani', 11.00, 'images/mutton_biryani.webp', '25 min', 3, 0, 1, 1, 0, 'Gluten, Dairy'),
+(3, 'Beef Biryani', 'biryani', 10.00, 'images/beef_biryani.webp', '22 min', 2, 0, 1, 1, 0, 'Gluten, Dairy'),
+(4, 'Chicken Curry', 'curry', 8.00, 'images/chicken_curry.webp', '18 min', 2, 1, 1, 1, 1, 'Dairy'),
+(5, 'Beef Curry', 'curry', 9.50, 'images/beef_curry.webp', '20 min', 3, 0, 1, 1, 1, 'Dairy');
 
 -- --------------------------------------------------------
 
@@ -121,6 +156,7 @@ CREATE TABLE `sauces` (
   `name` varchar(50) NOT NULL,
   `price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `icon` varchar(10) DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -128,9 +164,9 @@ CREATE TABLE `sauces` (
 -- Dumping data for table `sauces`
 --
 
-INSERT INTO `sauces` (`id`, `name`, `price`, `icon`, `is_active`) VALUES
-(1, 'Piccante', 0.50, '🌶️', 1),
-(2, 'Yoghurt', 0.50, '🥛', 1);
+INSERT INTO `sauces` (`id`, `name`, `price`, `icon`, `image_url`, `is_active`) VALUES
+(1, 'Piccante', 0.50, '🌶️', 'images/piccante.webp', 1),
+(2, 'Yoghurt', 0.50, '🥛', 'images/yoghurt.webp', 1);
 
 -- --------------------------------------------------------
 
@@ -156,6 +192,13 @@ INSERT INTO `sizes` (`id`, `name`, `price`, `is_active`) VALUES
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `ingredients`
@@ -197,6 +240,12 @@ ALTER TABLE `sizes`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `ingredients`

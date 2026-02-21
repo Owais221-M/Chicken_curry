@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout | Chicken Curry Messina</title>
-  <meta name="description" content="Complete your order at Chicken Curry Messina. Pickup or delivery for authentic Indian & Bangladeshi cuisine.">
+  <meta name="description"
+    content="Complete your order at Chicken Curry Messina. Pickup or delivery for authentic Indian & Bangladeshi cuisine.">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://js.stripe.com/v3/"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="favicon.png">
 
   <script>
     tailwind.config = {
@@ -19,6 +28,10 @@
             'warm-amber': '#FF8C00',
             'deep-curry': '#B8860B',
             'rich-brown': '#8B4513'
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
           }
         }
       }
@@ -26,32 +39,27 @@
   </script>
 
   <style>
-    .toast-show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .toast-hide {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
     /* Apple Pay Button Styling */
     .apple-pay-button-with-text {
       display: inline-block;
       -webkit-appearance: -apple-pay-button;
+      appearance: -apple-pay-button;
       -apple-pay-button-type: buy;
     }
+
     .apple-pay-button-black-with-text {
       -apple-pay-button-style: black;
     }
-    
+
     /* Stripe Element Styling */
     .StripeElement {
       padding: 12px;
     }
+
     .StripeElement--focus {
       border-color: #D4AF37;
     }
+
     .StripeElement--invalid {
       border-color: #ef4444;
     }
@@ -68,25 +76,47 @@
         <div class="hidden sm:block ml-2 text-sm text-gray-300">Messina</div>
       </div>
       <nav class="hidden md:flex space-x-8">
-        <a href="index.html" class="text-gray-300 hover:text-spice-gold transition-colors">Home</a>
+        <a href="home.html" class="text-gray-300 hover:text-spice-gold transition-colors">Home</a>
         <a href="menu.html" class="text-gray-300 hover:text-spice-gold transition-colors">Menu</a>
         <a href="#" class="text-spice-gold font-semibold">Checkout</a>
       </nav>
-      <button class="md:hidden text-white">
+      <button id="mobileMenuBtn" class="md:hidden text-white focus:outline-none">
         <i data-lucide="menu" class="w-6 h-6"></i>
       </button>
     </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu"
+      class="md:hidden hidden bg-black/95 backdrop-blur-md border-b border-spice-gold/20 absolute w-full left-0 top-16 shadow-2xl">
+      <div class="px-4 py-6 flex flex-col space-y-4">
+        <a href="home.html"
+          class="text-gray-300 hover:text-spice-gold transition-colors text-lg mobile-link block py-3 w-full">Home</a>
+        <a href="menu.html"
+          class="text-gray-300 hover:text-spice-gold transition-colors text-lg mobile-link block py-3 w-full">Menu</a>
+        <a href="#"
+          class="text-spice-gold transition-colors text-lg mobile-link font-semibold block py-3 w-full">Checkout</a>
+      </div>
+    </div>
   </header>
+
+  <!-- Opening Hours Banner (shown when kitchen is closed) -->
+  <div id="closedBanner"
+    class="hidden bg-red-900/90 border-b border-red-500/50 text-white text-center py-3 px-4 text-sm font-medium pt-20">
+    🕐 <strong>We're currently closed.</strong> Our kitchen is open daily from <strong>12:00 – 22:00</strong>. You can
+    still browse — orders will be processed when we reopen!
+  </div>
 
   <!-- Main Content -->
   <main class="pt-24 pb-32 max-w-7xl mx-auto px-4">
-    
+
     <!-- Page Title -->
     <section class="text-center mb-12">
-      <h1 class="text-4xl md:text-5xl font-bold mb-4">
-        Complete Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Order</span>
+      <h1
+        class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500"
+        data-i18n="checkout_complete_title">
+        Complete Your Order
       </h1>
-      <p class="text-gray-300 max-w-2xl mx-auto">
+      <p class="text-gray-300 max-w-2xl mx-auto" data-i18n="checkout_complete_sub">
         Just a few more details and your delicious meal will be ready for pickup!
       </p>
     </section>
@@ -95,14 +125,16 @@
     <div class="max-w-3xl mx-auto mb-12">
       <div class="flex items-center justify-between">
         <div class="flex flex-col items-center flex-1">
-          <div class="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-black font-bold mb-2">
+          <div
+            class="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-black font-bold mb-2">
             <i data-lucide="check" class="w-5 h-5"></i>
           </div>
           <span class="text-xs md:text-sm text-spice-gold font-semibold">Cart</span>
         </div>
         <div class="h-1 flex-1 bg-gradient-to-r from-amber-500 to-orange-500 mx-2"></div>
         <div class="flex flex-col items-center flex-1">
-          <div class="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-black font-bold mb-2">
+          <div
+            class="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-black font-bold mb-2">
             2
           </div>
           <span class="text-xs md:text-sm text-spice-gold font-semibold">Details</span>
@@ -119,43 +151,47 @@
 
     <!-- Checkout Grid -->
     <div class="grid lg:grid-cols-3 gap-8">
-      
+
       <!-- Left Column - Forms -->
       <div class="lg:col-span-2 space-y-6">
-        
+
         <!-- Order Type Selection -->
         <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8">
           <h2 class="text-2xl font-bold mb-6 flex items-center">
             <i data-lucide="shopping-bag" class="w-6 h-6 mr-3 text-spice-gold"></i>
-            Order Type
+            <span data-i18n="checkout_order_type">Order Type</span>
           </h2>
-          
+
           <div class="grid md:grid-cols-2 gap-4">
             <label class="relative cursor-pointer">
               <input type="radio" name="orderType" value="pickup" checked class="peer sr-only" />
-              <div class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 rounded-xl p-6 transition-all hover:border-spice-gold/50">
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-6 transition-all hover:border-spice-gold/50">
                 <div class="flex items-center justify-between mb-3">
                   <i data-lucide="store" class="w-8 h-8 text-spice-gold"></i>
-                  <div class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                  <div
+                    class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
                     <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
                   </div>
                 </div>
-                <h3 class="font-bold text-lg mb-1">Pickup</h3>
-                <p class="text-sm text-gray-400">Ready in 15-20 mins</p>
+                <h3 class="font-bold text-lg mb-1" data-i18n="checkout_pickup">Pickup</h3>
+                <p class="text-sm text-gray-400" data-i18n="checkout_time_pickup">Ready in 15-20 mins</p>
               </div>
             </label>
 
             <label class="relative cursor-pointer">
               <input type="radio" name="orderType" value="delivery" class="peer sr-only" />
-              <div class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 rounded-xl p-6 transition-all hover:border-spice-gold/50">
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-6 transition-all hover:border-spice-gold/50">
                 <div class="flex items-center justify-between mb-3">
                   <i data-lucide="bike" class="w-8 h-8 text-spice-gold"></i>
-                  <div class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                  <div
+                    class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
                     <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
                   </div>
                 </div>
-                <h3 class="font-bold text-lg mb-1">Delivery</h3>
-                <p class="text-sm text-gray-400">30-45 mins</p>
+                <h3 class="font-bold text-lg mb-1" data-i18n="checkout_delivery">Delivery (€3.00)</h3>
+                <p class="text-sm text-gray-400" data-i18n="checkout_time_delivery">30-45 mins</p>
               </div>
             </label>
           </div>
@@ -165,105 +201,84 @@
         <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8">
           <h2 class="text-2xl font-bold mb-6 flex items-center">
             <i data-lucide="user" class="w-6 h-6 mr-3 text-spice-gold"></i>
-            Contact Information
+            <span data-i18n="checkout_contact">Contact Information</span>
           </h2>
-          
+
           <form id="checkoutForm" class="space-y-5">
             <div class="grid md:grid-cols-2 gap-5">
               <div>
-                <label for="firstName" class="text-sm text-gray-400 block mb-2">First Name *</label>
-                <input 
-                  id="firstName" 
-                  type="text" 
-                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors" 
-                  placeholder="John"
-                  required 
-                />
+                <label for="firstName" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_fname">First Name
+                  *</label>
+                <input id="firstName" type="text"
+                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                  placeholder="John" data-i18n="checkout_fname" required />
               </div>
               <div>
-                <label for="lastName" class="text-sm text-gray-400 block mb-2">Last Name *</label>
-                <input 
-                  id="lastName" 
-                  type="text" 
-                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors" 
-                  placeholder="Doe"
-                  required 
-                />
+                <label for="lastName" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_lname">Last Name
+                  *</label>
+                <input id="lastName" type="text"
+                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                  placeholder="Doe" data-i18n="checkout_lname" required />
               </div>
             </div>
 
             <div>
-              <label for="email" class="text-sm text-gray-400 block mb-2">Email Address *</label>
-              <input 
-                id="email" 
-                type="email" 
-                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors" 
-                placeholder="john.doe@example.com"
-                required 
-              />
+              <label for="email" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_email">Email Address
+                *</label>
+              <input id="email" type="email"
+                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                placeholder="john.doe@example.com" data-i18n="checkout_email" required />
             </div>
 
             <div>
-              <label for="phone" class="text-sm text-gray-400 block mb-2">Phone Number *</label>
-              <input 
-                id="phone" 
-                type="tel" 
-                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors" 
-                placeholder="+39 123 456 7890"
-                required 
-              />
+              <label for="phone" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_phone">Phone Number
+                *</label>
+              <input id="phone" type="tel"
+                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                placeholder="+39 123 456 7890" data-i18n="checkout_phone" required />
             </div>
           </form>
         </div>
 
         <!-- Delivery Address (shown when delivery is selected) -->
-        <div id="deliveryAddress" class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8 hidden">
+        <div id="deliveryAddress"
+          class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8 hidden">
           <h2 class="text-2xl font-bold mb-6 flex items-center">
             <i data-lucide="map-pin" class="w-6 h-6 mr-3 text-spice-gold"></i>
-            Delivery Address
+            <span data-i18n="checkout_delivery_addr">Delivery Address</span>
           </h2>
-          
+
           <div class="space-y-5">
             <div>
-              <label for="street" class="text-sm text-gray-400 block mb-2">Street Address *</label>
-              <input 
-                id="street" 
-                type="text" 
-                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors" 
-                placeholder="Via Roma, 123"
-              />
+              <label for="street" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_street">Street Address
+                *</label>
+              <input id="street" type="text"
+                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                placeholder="Via Roma, 123" data-i18n="checkout_street" />
             </div>
 
             <div class="grid md:grid-cols-2 gap-5">
               <div>
-                <label for="city" class="text-sm text-gray-400 block mb-2">City *</label>
-                <input 
-                  id="city" 
-                  type="text" 
-                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors" 
-                  placeholder="Messina"
-                  value="Messina"
-                />
+                <label for="city" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_city">City *</label>
+                <input id="city" type="text"
+                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                  placeholder="Messina" value="Messina" data-i18n="checkout_city" />
               </div>
               <div>
-                <label for="postal" class="text-sm text-gray-400 block mb-2">Postal Code *</label>
-                <input 
-                  id="postal" 
-                  type="text" 
-                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors" 
-                  placeholder="98100"
-                />
+                <label for="postal" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_postal">Postal Code
+                  *</label>
+                <input id="postal" type="text"
+                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                  placeholder="98100" data-i18n="checkout_postal" />
               </div>
             </div>
 
             <div>
-              <label for="notes" class="text-sm text-gray-400 block mb-2">Delivery Notes (Optional)</label>
-              <textarea 
-                id="notes" 
-                rows="3" 
-                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white resize-none transition-colors" 
-                placeholder="Apartment number, building entrance, etc."
-              ></textarea>
+              <label for="notes" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_notes">Delivery
+                Notes</label>
+              <textarea id="notes" rows="3"
+                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white resize-none transition-colors"
+                placeholder="Apartment number, building entrance, etc."></textarea>
             </div>
           </div>
         </div>
@@ -272,14 +287,15 @@
         <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8">
           <h2 class="text-2xl font-bold mb-6 flex items-center">
             <i data-lucide="credit-card" class="w-6 h-6 mr-3 text-spice-gold"></i>
-            Payment Method
+            <span data-i18n="checkout_payment">Payment Method</span>
           </h2>
-          
+
           <div class="space-y-4">
             <!-- Cash Payment -->
             <label class="relative cursor-pointer block">
               <input type="radio" name="payment" value="cash" checked class="peer sr-only" />
-              <div class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
                 <div class="flex items-center">
                   <i data-lucide="banknote" class="w-6 h-6 text-spice-gold mr-4"></i>
                   <div>
@@ -287,7 +303,8 @@
                     <p class="text-sm text-gray-400">Pay when you receive your order</p>
                   </div>
                 </div>
-                <div class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                <div
+                  class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
                   <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
                 </div>
               </div>
@@ -296,15 +313,17 @@
             <!-- Card Payment (Stripe) -->
             <label class="relative cursor-pointer block">
               <input type="radio" name="payment" value="card" class="peer sr-only" id="cardPaymentRadio" />
-              <div class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
                 <div class="flex items-center">
                   <i data-lucide="credit-card" class="w-6 h-6 text-spice-gold mr-4"></i>
                   <div>
-                    <h3 class="font-semibold">Card Payment</h3>
+                    <h3 class="font-semibold" data-i18n="checkout_card">Card Payment</h3>
                     <p class="text-sm text-gray-400">Debit or Credit Card</p>
                   </div>
                 </div>
-                <div class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                <div
+                  class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
                   <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
                 </div>
               </div>
@@ -314,12 +333,12 @@
             <div id="cardDetailsSection" class="hidden overflow-hidden transition-all duration-300">
               <div class="bg-black/30 border border-spice-gold/10 rounded-xl p-6 mt-4 space-y-4">
                 <h4 class="font-semibold text-spice-gold mb-4">Card Details</h4>
-                
+
                 <!-- Stripe Card Element -->
                 <div id="card-element" class="bg-black/50 border border-spice-gold/20 rounded-lg px-4 py-3">
                   <!-- Stripe.js injects the Card Element here -->
                 </div>
-                
+
                 <!-- Card errors -->
                 <div id="card-errors" class="text-red-400 text-sm hidden"></div>
 
@@ -330,60 +349,35 @@
               </div>
             </div>
 
-            <!-- Apple Pay -->
+            <!-- Express Wallet Checkout (Apple Pay / Google Pay / Link) -->
             <label class="relative cursor-pointer block">
-              <input type="radio" name="payment" value="apple-pay" class="peer sr-only" id="applePayRadio" />
-              <div class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
+              <input type="radio" name="payment" value="express" class="peer sr-only" id="expressPaymentRadio" />
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
                 <div class="flex items-center">
-                  <div class="w-6 h-6 mr-4 flex items-center justify-center">
-                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M15.337 2.792c-.767.886-2.019 1.572-3.272 1.48-.156-1.254.466-2.585 1.195-3.433.767-.925 2.116-1.595 3.195-1.634.117 1.292-.349 2.548-1.118 3.587zm1.119 1.749c-1.788-.105-3.3.994-4.146.994-.847 0-2.146-.956-3.537-.929-1.827.028-3.497 1.04-4.438 2.667-1.905 3.264-.494 8.118 1.361 10.785.923 1.303 2.009 2.761 3.439 2.71 1.361-.056 1.866-.866 3.503-.866 1.636 0 2.086.866 3.537.838 1.471-.027 2.436-1.33 3.359-2.639 1.066-1.514 1.505-2.981 1.533-3.055-.033-.017-2.938-1.118-2.971-4.434-.028-2.772 2.281-4.107 2.383-4.174-1.302-1.881-3.311-2.088-4.023-2.127z" fill="white"/>
-                    </svg>
-                  </div>
+                  <i data-lucide="smartphone" class="w-6 h-6 text-spice-gold mr-4"></i>
                   <div>
-                    <h3 class="font-semibold">Apple Pay</h3>
-                    <p class="text-sm text-gray-400">Pay with Apple Pay</p>
+                    <h3 class="font-semibold" data-i18n="checkout_apple">Express Checkout</h3>
+                    <p class="text-sm text-gray-400">Apple Pay, Google Pay</p>
                   </div>
                 </div>
-                <div class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                <div
+                  class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
                   <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
                 </div>
               </div>
             </label>
 
-            <!-- Apple Pay Button (Hidden until selected) -->
-            <div id="applePayButtonContainer" class="hidden">
-              <div id="apple-pay-button" class="apple-pay-button-with-text apple-pay-button-black-with-text w-full h-12 rounded-xl cursor-pointer"></div>
-            </div>
-
-            <!-- Google Pay -->
-            <label class="relative cursor-pointer block">
-              <input type="radio" name="payment" value="google-pay" class="peer sr-only" id="googlePayRadio" />
-              <div class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
-                <div class="flex items-center">
-                  <div class="w-6 h-6 mr-4 flex items-center justify-center">
-                    <svg class="w-8 h-8" viewBox="0 0 48 24" fill="none">
-                      <path d="M23.7 12.3v7.2h-2.3v-18h6.1c1.5 0 2.9.6 3.9 1.6 1 1 1.6 2.4 1.6 3.9 0 1.5-.6 2.9-1.6 3.9-1 1-2.4 1.6-3.9 1.6l-3.8-.2zm0-8.8v6.5h3.9c.9 0 1.7-.4 2.3-1 .6-.6 1-1.4 1-2.3 0-.9-.4-1.7-1-2.3-.6-.6-1.4-1-2.3-1h-3.9v.1zm14.7 2.7c1.7 0 3 .5 4 1.6 1 1.1 1.5 2.5 1.5 4.3v7h-2.2v-1.6h-.1c-1 1.3-2.2 2-3.7 2-1.4 0-2.5-.4-3.4-1.2-.9-.8-1.4-1.9-1.4-3.2 0-1.4.5-2.4 1.5-3.2s2.3-1.2 3.9-1.2c1.3 0 2.4.3 3.3.8v-.6c0-.8-.3-1.5-.9-2.1-.6-.6-1.4-.9-2.2-.9-1.3 0-2.3.5-3 1.6l-2-1.2c1.1-1.7 2.8-2.5 5.1-2.5l-.4-.6zm-3.2 10.9c0 .6.3 1.1.8 1.5.5.4 1.1.6 1.8.6 1 0 2-.4 2.7-1.1.7-.7 1.1-1.6 1.1-2.6-.7-.6-1.7-.9-2.9-.9-1 0-1.8.2-2.5.7-.6.5-1 1.1-1 1.8z" fill="white"/>
-                      <path d="M12.5 9.5c0-.7-.1-1.5-.2-2.2H6.4v4.2h3.4c-.1.9-.7 1.7-1.4 2.2v2.7h2.3c1.3-1.2 2.1-3 2.1-5.2l-.3-1.7z" fill="#4285F4"/>
-                      <path d="M6.4 17.8c1.9 0 3.5-.6 4.6-1.7L8.7 13.7c-.6.4-1.4.7-2.3.7-1.8 0-3.3-1.2-3.8-2.8H.2v2.8c1.1 2.2 3.4 3.7 6.2 3.7v-.3z" fill="#34A853"/>
-                      <path d="M2.6 10.8c-.3-.9-.3-1.8 0-2.7V5.3H.2c-1 2-1 4.3 0 6.3l2.4-1.9v1.1z" fill="#FBBC04"/>
-                      <path d="M6.4 4.8c1 0 1.9.3 2.6 1l1.9-1.9C9.8 2.8 8.2 2 6.4 2 3.6 2 1.3 3.5.2 5.7l2.4 1.9C3.1 6 4.6 4.8 6.4 4.8z" fill="#EA4335"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 class="font-semibold">Google Pay</h3>
-                    <p class="text-sm text-gray-400">Pay with Google Pay</p>
-                  </div>
+            <!-- Stripe Express Button (Hidden until selected) -->
+            <div id="expressButtonContainer" class="hidden mt-4">
+              <div class="bg-black/30 border border-spice-gold/10 rounded-xl p-4">
+                <div id="payment-request-button" class="w-full h-12 rounded-xl">
+                  <!-- Stripe Payment Button inserts here -->
                 </div>
-                <div class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
-                  <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
-                </div>
+                <!-- Warning shown if no compatible wallets detected -->
+                <p id="express-unavailable-msg" class="text-xs text-gray-500 mt-2 hidden text-center">No compatible
+                  digital wallet detected on your device.</p>
               </div>
-            </label>
-
-            <!-- Google Pay Button (Hidden until selected) -->
-            <div id="googlePayButtonContainer" class="hidden">
-              <div id="google-pay-button" class="w-full"></div>
             </div>
           </div>
         </div>
@@ -392,26 +386,24 @@
         <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8">
           <h2 class="text-2xl font-bold mb-6 flex items-center">
             <i data-lucide="message-square" class="w-6 h-6 mr-3 text-spice-gold"></i>
-            Special Instructions
+            <span data-i18n="checkout_special">Special Instructions</span>
           </h2>
-          
-          <textarea 
-            id="specialInstructions" 
-            rows="4" 
-            class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white resize-none transition-colors" 
-            placeholder="Any special requests? Extra spicy? Less oil? Let us know!"
-          ></textarea>
+
+          <textarea id="specialInstructions" rows="4"
+            class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white resize-none transition-colors"
+            placeholder="Any special requests? Extra spicy? Less oil? Let us know!"></textarea>
         </div>
       </div>
 
       <!-- Right Column - Order Summary -->
       <div class="lg:col-span-1">
-        <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8 sticky top-24">
+        <div
+          class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8 sticky top-24">
           <h2 class="text-2xl font-bold mb-6 flex items-center">
             <i data-lucide="shopping-cart" class="w-6 h-6 mr-3 text-spice-gold"></i>
-            Order Summary
+            <span data-i18n="checkout_summary">Order Summary</span>
           </h2>
-          
+
           <!-- Cart Items -->
           <div id="orderItems" class="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2">
             <!-- Sample Item 1 -->
@@ -448,15 +440,15 @@
           <!-- Price Breakdown -->
           <div class="space-y-3 mb-6 pb-6 border-b border-gray-800">
             <div class="flex justify-between text-gray-300">
-              <span>Subtotal</span>
+              <span data-i18n="checkout_subtotal">Subtotal</span>
               <span id="subtotal">€42.00</span>
             </div>
             <div class="flex justify-between text-gray-300">
-              <span>Service Fee</span>
+              <span data-i18n="checkout_service">Service Fee</span>
               <span id="serviceFee">€2.00</span>
             </div>
             <div id="deliveryFeeRow" class="flex justify-between text-gray-300 hidden">
-              <span>Delivery Fee</span>
+              <span data-i18n="checkout_delivery">Delivery Fee</span>
               <span id="deliveryFee">€3.00</span>
             </div>
           </div>
@@ -468,8 +460,9 @@
           </div>
 
           <!-- Place Order Button -->
-          <button id="placeOrderBtn" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-black font-bold py-4 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg flex items-center justify-center">
-            <i data-lucide="check-circle" class="w-5 h-5 mr-2"></i>
+          <button id="placeOrderBtn"
+            class="w-full bg-gradient-to-r from-spice-gold to-warm-amber text-black font-bold py-4 rounded-full text-lg shadow-[0_4px_15px_rgba(212,175,55,0.4)] hover:scale-[1.02] transition-transform duration-300"
+            data-i18n="checkout_place">
             Place Order
           </button>
 
@@ -484,9 +477,12 @@
   </main>
 
   <!-- Success Modal -->
-  <div id="successModal" class="fixed inset-0 bg-black/80 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 z-50">
-    <div class="bg-gradient-to-br from-gray-900 to-black border border-spice-gold/20 rounded-3xl p-10 text-center max-w-md mx-4 transform scale-95 transition-transform duration-300">
-      <div class="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
+  <div id="successModal"
+    class="fixed inset-0 bg-black/80 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+    <div
+      class="bg-gradient-to-br from-gray-900 to-black border border-spice-gold/20 rounded-3xl p-10 text-center max-w-md mx-4 transform scale-95 transition-transform duration-300">
+      <div
+        class="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
         <i data-lucide="check" class="w-10 h-10 text-black"></i>
       </div>
       <h2 class="text-3xl font-bold text-spice-gold mb-4">Order Confirmed!</h2>
@@ -499,10 +495,12 @@
         <p id="orderNumber" class="text-2xl font-bold text-spice-gold">#12345</p>
       </div>
       <div class="space-y-3">
-        <button onclick="window.location.href='menu.html'" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-black px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all">
+        <button onclick="window.location.href='menu.html'"
+          class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-black px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all">
           Back to Menu
         </button>
-        <button onclick="window.location.href='index.html'" class="w-full border-2 border-spice-gold text-spice-gold px-6 py-3 rounded-xl font-semibold hover:bg-spice-gold hover:text-black transition-all">
+        <button onclick="window.location.href='home.html'"
+          class="w-full border-2 border-spice-gold text-spice-gold px-6 py-3 rounded-xl font-semibold hover:bg-spice-gold hover:text-black transition-all">
           Go to Home
         </button>
       </div>
@@ -510,9 +508,12 @@
   </div>
 
   <!-- Toast Notification -->
-  <div id="toast" class="toast-hide fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-spice-gold text-black px-6 py-3 rounded-full transition-all duration-300 z-50 font-semibold">
+  <div id="toast"
+    class="translate-y-10 opacity-0 pointer-events-none fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-spice-gold text-black px-6 py-3 rounded-full transition-all duration-300 z-50 font-semibold">
     Order placed successfully!
   </div>
+
+  </main>
 
   <!-- Footer -->
   <footer class="bg-gray-900 border-t border-spice-gold/20 mt-20">
@@ -523,7 +524,8 @@
             Chicken Curry
           </div>
           <p class="text-gray-300 mb-4">
-            Authentic Indian & Bangladeshi cuisine in the heart of Messina, Sicily. Where traditional flavors meet modern hospitality.
+            Authentic Indian & Bangladeshi cuisine in the heart of Messina, Sicily. Where traditional flavors meet
+            modern hospitality.
           </p>
           <div class="flex items-center space-x-2 text-spice-gold">
             <i data-lucide="star" class="w-5 h-5 fill-current"></i>
@@ -563,13 +565,13 @@
           © 2024 Chicken Curry Messina. All rights reserved.
         </p>
         <div class="flex space-x-6 mt-4 md:mt-0">
-          <a href="#" class="text-gray-400 hover:text-spice-gold transition-colors">
+          <a href="javascript:void(0)" class="text-gray-400 hover:text-spice-gold transition-colors">
             <i data-lucide="facebook" class="w-5 h-5"></i>
           </a>
-          <a href="#" class="text-gray-400 hover:text-spice-gold transition-colors">
+          <a href="javascript:void(0)" class="text-gray-400 hover:text-spice-gold transition-colors">
             <i data-lucide="instagram" class="w-5 h-5"></i>
           </a>
-          <a href="#" class="text-gray-400 hover:text-spice-gold transition-colors">
+          <a href="javascript:void(0)" class="text-gray-400 hover:text-spice-gold transition-colors">
             <i data-lucide="map-pin" class="w-5 h-5"></i>
           </a>
         </div>
@@ -577,6 +579,7 @@
     </div>
   </footer>
 
+  <script src="translations.js"></script>
   <script>
     // Initialize Lucide icons
     lucide.createIcons();
@@ -593,7 +596,7 @@
     const style = {
       base: {
         color: '#ffffff',
-        fontFamily: 'system-ui, -apple-system, sans-serif',
+        fontFamily: '"Outfit", sans-serif',
         fontSize: '16px',
         '::placeholder': {
           color: '#9ca3af',
@@ -609,13 +612,192 @@
     const cardElement = elements.create('card', { style: style });
 
     // ============================================
-    // ORDER TYPE TOGGLE
+    // STRIPE PAYMENT REQUEST (APPLE PAY / GOOGLE PAY)
     // ============================================
+    let paymentRequest;
+    let prButton;
+
+    function initStripePaymentRequest(totalAmount) {
+      // Calculate amount in cents
+      const amountCents = Math.round(totalAmount * 100);
+
+      paymentRequest = stripe.paymentRequest({
+        country: 'IT',
+        currency: 'eur',
+        total: {
+          label: 'Chicken Curry Messina Order',
+          amount: amountCents,
+        },
+        requestPayerName: true,
+        requestPayerEmail: true,
+      });
+
+      prButton = elements.create('paymentRequestButton', {
+        paymentRequest: paymentRequest,
+        style: {
+          paymentRequestButton: {
+            type: 'default', // Using Express Checkout UI
+            theme: 'dark'
+          }
+        }
+      });
+
+      // Check the availability of the Payment Request API first
+      paymentRequest.canMakePayment().then(function (result) {
+        if (result) {
+          prButton.mount('#payment-request-button');
+          document.getElementById('express-unavailable-msg').classList.add('hidden');
+        } else {
+          document.getElementById('payment-request-button').style.display = 'none';
+          document.getElementById('express-unavailable-msg').classList.remove('hidden');
+          document.getElementById('expressPaymentRadio').parentElement.classList.add('opacity-50');
+        }
+      });
+
+      // Handle the payment authorization
+      paymentRequest.on('paymentmethod', async (ev) => {
+        console.log('Payment method attached successfully:', ev.paymentMethod);
+
+        // Construct express order payload
+        const delivery = document.querySelector('input[name="orderType"]:checked').value === 'delivery';
+        let addrNotes = document.getElementById("specialInstructions").value;
+        if (delivery) {
+          addrNotes = [
+            document.getElementById("street").value,
+            document.getElementById("city").value,
+            document.getElementById("postal").value,
+            document.getElementById("notes").value,
+            addrNotes
+          ].filter(x => x).join(", ");
+        }
+
+        const payload = {
+          name: document.getElementById("firstName").value || ev.payerName || "Express Checkout",
+          phone: document.getElementById("phone").value || ev.payerPhone || "No Phone",
+          notes: addrNotes,
+          cart: cart,
+          payment_method_id: ev.paymentMethod.id,
+          order_type: delivery ? 'delivery' : 'pickup'
+        };
+
+        try {
+          const res = await fetch("create_order.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (data.success) {
+            ev.complete('success');
+            localStorage.removeItem("cart");
+            showSuccessModal(data.data.order_id);
+          } else {
+            ev.complete('fail');
+            alert("Payment failed: " + data.message);
+          }
+        } catch (err) {
+          ev.complete('fail');
+          alert("Server error processing order");
+        }
+      });
+    }
+
+    // ============================================
+    // DYNAMIC CART RENDERING
+    // ============================================
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Legacy Cart Migration
+    cart = cart.map(item => {
+      if (item.name === 'Piccante Sauce') item.name = 'Piccante';
+      if (item.name === 'Yoghurt Sauce') item.name = 'Yoghurt';
+      return item;
+    });
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    const orderItemsContainer = document.getElementById("orderItems");
+    const subtotalEl = document.getElementById("subtotal");
+    const deliveryFeeRow = document.getElementById("deliveryFeeRow");
+    const deliveryFeeEl = document.getElementById("deliveryFee");
+    const totalPriceEl = document.getElementById("totalPrice");
+    const serviceFeeEl = document.getElementById("serviceFee");
     const orderTypeRadios = document.querySelectorAll('input[name="orderType"]');
     const deliveryAddressSection = document.getElementById('deliveryAddress');
-    const deliveryFeeRow = document.getElementById('deliveryFeeRow');
-    const totalPrice = document.getElementById('totalPrice');
     const orderTypeMessage = document.getElementById('orderTypeMessage');
+
+    const SERVICE_FEE = 2.00;
+    const DELIVERY_FEE = 3.00;
+    let currentDeliveryFee = 0;
+
+    function renderOrderItems() {
+      orderItemsContainer.innerHTML = "";
+
+      if (cart.length === 0) {
+        orderItemsContainer.innerHTML = `
+          <div class="text-center py-10 mt-8">
+            <svg class="w-16 h-16 mx-auto mb-4 opacity-30 text-spice-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <p class="text-gray-300 font-semibold mb-6">Your cart is empty.</p>
+            <a href="menu.html" class="inline-block bg-spice-gold text-black px-6 py-2 rounded-full font-bold hover:bg-warm-amber transition">Browse Menu</a>
+          </div>
+        `;
+        return 0;
+      }
+
+      let subtotal = 0;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        subtotal += itemTotal;
+
+        const details = [];
+        if (item.size) details.push(item.size);
+        if (item.ingredients && item.ingredients.length > 0) details.push(item.ingredients.join(", "));
+        if (item.sauces && item.sauces.length > 0) details.push(item.sauces.join(", "));
+
+        const detailsHTML = details.length > 0 ? `<p class="text-sm text-gray-400">${details.join(" | ")}</p>` : "";
+
+        const div = document.createElement("div");
+        div.className = "flex justify-between items-start pb-4 border-b border-gray-800";
+        div.innerHTML = `
+          <div class="flex-1">
+            <h3 class="font-semibold text-white mb-1">${item.name}</h3>
+            ${detailsHTML}
+            <p class="text-sm text-gray-400">Qty: ${item.qty}</p>
+          </div>
+          <span class="text-spice-gold font-semibold">€${itemTotal.toFixed(2)}</span>
+        `;
+        orderItemsContainer.appendChild(div);
+      });
+
+      return subtotal;
+    }
+
+    function updateTotals() {
+      const subotal = renderOrderItems();
+      subtotalEl.textContent = `€${subotal.toFixed(2)}`;
+      serviceFeeEl.textContent = `€${SERVICE_FEE.toFixed(2)}`;
+
+      const total = subotal + SERVICE_FEE + currentDeliveryFee;
+      totalPriceEl.textContent = `€${total.toFixed(2)}`;
+
+      // Update Stripe Payment Request
+      if (typeof initStripePaymentRequest === 'function') {
+        if (!paymentRequest) {
+          initStripePaymentRequest(total);
+        } else {
+          paymentRequest.update({
+            total: {
+              label: 'Chicken Curry Messina Order',
+              amount: Math.round(total * 100),
+            }
+          });
+        }
+      }
+    }
+
+    updateTotals();
 
     orderTypeRadios.forEach(radio => {
       radio.addEventListener('change', (e) => {
@@ -623,14 +805,15 @@
         if (e.target.value === 'delivery') {
           deliveryAddressSection.classList.remove('hidden');
           deliveryFeeRow.classList.remove('hidden');
-          totalPrice.textContent = '€47.00';
+          currentDeliveryFee = DELIVERY_FEE;
           orderTypeMessage.textContent = 'Your food will be delivered in 30-45 minutes';
         } else {
           deliveryAddressSection.classList.add('hidden');
           deliveryFeeRow.classList.add('hidden');
-          totalPrice.textContent = '€44.00';
+          currentDeliveryFee = 0;
           orderTypeMessage.textContent = 'Your food will be ready for pickup in 15-20 minutes';
         }
+        updateTotals();
       });
     });
 
@@ -645,11 +828,10 @@
     paymentRadios.forEach(radio => {
       radio.addEventListener('change', (e) => {
         lucide.createIcons();
-        
+
         // Hide all payment-specific sections
         cardDetailsSection.classList.add('hidden');
-        applePayButtonContainer.classList.add('hidden');
-        googlePayButtonContainer.classList.add('hidden');
+        expressButtonContainer.classList.add('hidden');
 
         // Show relevant section based on selection
         if (e.target.value === 'card') {
@@ -659,10 +841,8 @@
             cardElement.mount('#card-element');
             lucide.createIcons();
           }, 100);
-        } else if (e.target.value === 'apple-pay') {
-          applePayButtonContainer.classList.remove('hidden');
-        } else if (e.target.value === 'google-pay') {
-          googlePayButtonContainer.classList.remove('hidden');
+        } else if (e.target.value === 'express') {
+          expressButtonContainer.classList.remove('hidden');
         }
       });
     });
@@ -691,208 +871,13 @@
         const displayError = document.getElementById('card-errors');
         displayError.textContent = error.message;
         displayError.classList.remove('hidden');
-        return false;
+        return null; // Return null so order stops processing
       } else {
-        // Payment method created successfully
-        console.log('Stripe Payment Method:', paymentMethod);
-        
-        // TODO: Send paymentMethod.id to your server to complete the payment
-        // Example:
-        // const response = await fetch('/api/process-payment', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({
-        //     paymentMethodId: paymentMethod.id,
-        //     amount: 4400, // amount in cents (€44.00)
-        //   })
-        // });
-        
-        return true;
+        return paymentMethod.id; // Return token for backend
       }
     }
 
-    // ============================================
-    // APPLE PAY INTEGRATION
-    // ============================================
-    const applePayButton = document.getElementById('apple-pay-button');
-    
-    // Check if Apple Pay is available
-    if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
-      applePayButton.style.display = 'block';
-      
-      applePayButton.addEventListener('click', async () => {
-        // Get the total amount
-        const amount = document.getElementById('totalPrice').textContent.replace('€', '');
-        
-        // Create payment request
-        const paymentRequest = {
-          countryCode: 'IT',
-          currencyCode: 'EUR',
-          total: {
-            label: 'Chicken Curry Messina',
-            amount: amount,
-          },
-          supportedNetworks: ['visa', 'masterCard', 'amex'],
-          merchantCapabilities: ['supports3DS'],
-        };
 
-        // Create Apple Pay session
-        const session = new ApplePaySession(3, paymentRequest);
-
-        session.onvalidatemerchant = async (event) => {
-          // TODO: Call your server to validate the merchant
-          // const merchantSession = await fetch('/api/apple-pay/validate', {
-          //   method: 'POST',
-          //   body: JSON.stringify({ validationURL: event.validationURL })
-          // }).then(r => r.json());
-          // session.completeMerchantValidation(merchantSession);
-          
-          console.log('Apple Pay merchant validation needed');
-        };
-
-        session.onpaymentauthorized = async (event) => {
-          // Process the payment
-          console.log('Apple Pay payment authorized:', event.payment);
-          
-          // TODO: Send payment token to your server
-          // const result = await fetch('/api/apple-pay/process', {
-          //   method: 'POST',
-          //   body: JSON.stringify({ token: event.payment.token })
-          // }).then(r => r.json());
-          
-          const success = true; // Replace with actual result
-          
-          if (success) {
-            session.completePayment(ApplePaySession.STATUS_SUCCESS);
-            showSuccessModal();
-          } else {
-            session.completePayment(ApplePaySession.STATUS_FAILURE);
-          }
-        };
-
-        session.begin();
-      });
-    } else {
-      // Apple Pay not available
-      document.getElementById('applePayRadio').parentElement.style.opacity = '0.5';
-      document.getElementById('applePayRadio').disabled = true;
-    }
-
-    // ============================================
-    // GOOGLE PAY INTEGRATION
-    // ============================================
-    const baseRequest = {
-      apiVersion: 2,
-      apiVersionMinor: 0,
-    };
-
-    const allowedCardNetworks = ['MASTERCARD', 'VISA', 'AMEX'];
-    const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
-
-    const tokenizationSpecification = {
-      type: 'PAYMENT_GATEWAY',
-      parameters: {
-        gateway: 'stripe',
-        'stripe:version': '2018-10-31',
-        'stripe:publishableKey': STRIPE_PUBLISHABLE_KEY,
-      },
-    };
-
-    const baseCardPaymentMethod = {
-      type: 'CARD',
-      parameters: {
-        allowedAuthMethods: allowedCardAuthMethods,
-        allowedCardNetworks: allowedCardNetworks,
-      },
-    };
-
-    const cardPaymentMethod = Object.assign({}, baseCardPaymentMethod, {
-      tokenizationSpecification: tokenizationSpecification,
-    });
-
-    let paymentsClient = null;
-
-    function getGooglePaymentsClient() {
-      if (paymentsClient === null) {
-        paymentsClient = new google.payments.api.PaymentsClient({
-          environment: 'TEST', // Change to 'PRODUCTION' for live
-        });
-      }
-      return paymentsClient;
-    }
-
-    function onGooglePayLoaded() {
-      const paymentsClient = getGooglePaymentsClient();
-      paymentsClient
-        .isReadyToPay({ ...baseRequest, allowedPaymentMethods: [baseCardPaymentMethod] })
-        .then((response) => {
-          if (response.result) {
-            addGooglePayButton();
-          } else {
-            // Google Pay not available
-            document.getElementById('googlePayRadio').parentElement.style.opacity = '0.5';
-            document.getElementById('googlePayRadio').disabled = true;
-          }
-        })
-        .catch((err) => {
-          console.error('Error checking Google Pay availability:', err);
-        });
-    }
-
-    function addGooglePayButton() {
-      const paymentsClient = getGooglePaymentsClient();
-      const button = paymentsClient.createButton({
-        onClick: onGooglePaymentButtonClicked,
-        buttonType: 'buy',
-        buttonColor: 'black',
-        buttonSizeMode: 'fill',
-      });
-      document.getElementById('google-pay-button').appendChild(button);
-    }
-
-    function getGooglePaymentDataRequest() {
-      const amount = document.getElementById('totalPrice').textContent.replace('€', '');
-      
-      const paymentDataRequest = Object.assign({}, baseRequest);
-      paymentDataRequest.allowedPaymentMethods = [cardPaymentMethod];
-      paymentDataRequest.transactionInfo = {
-        totalPriceStatus: 'FINAL',
-        totalPrice: amount,
-        currencyCode: 'EUR',
-        countryCode: 'IT',
-      };
-      paymentDataRequest.merchantInfo = {
-        merchantName: 'Chicken Curry Messina',
-      };
-
-      return paymentDataRequest;
-    }
-
-    function onGooglePaymentButtonClicked() {
-      const paymentDataRequest = getGooglePaymentDataRequest();
-      const paymentsClient = getGooglePaymentsClient();
-      
-      paymentsClient
-        .loadPaymentData(paymentDataRequest)
-        .then((paymentData) => {
-          // Handle the payment data
-          console.log('Google Pay payment data:', paymentData);
-          
-          // TODO: Send payment token to your server
-          // const token = paymentData.paymentMethodData.tokenizationData.token;
-          
-          showSuccessModal();
-        })
-        .catch((err) => {
-          console.error('Google Pay error:', err);
-        });
-    }
-
-    // Load Google Pay API
-    const googlePayScript = document.createElement('script');
-    googlePayScript.src = 'https://pay.google.com/gp/p/js/pay.js';
-    googlePayScript.onload = onGooglePayLoaded;
-    document.head.appendChild(googlePayScript);
 
     // ============================================
     // PLACE ORDER BUTTON
@@ -902,6 +887,11 @@
     const toast = document.getElementById('toast');
 
     placeOrderBtn.addEventListener('click', async () => {
+      if (cart.length === 0) {
+        showToast("Your cart is empty!");
+        return;
+      }
+
       // Validate form
       const form = document.getElementById('checkoutForm');
       if (!form.checkValidity()) {
@@ -909,29 +899,115 @@
         return;
       }
 
+      // Minimum Delivery Order Validation
+      const delivery = document.querySelector('input[name="orderType"]:checked').value === 'delivery';
+      const currentSubtotal = parseFloat(document.getElementById("subtotal").textContent.replace('€', ''));
+      if (delivery && currentSubtotal < 15.00) {
+        alert('Delivery is only available for orders over €15.00. Please add more items or switch your order to Pickup.');
+        return;
+      }
+
       // Get selected payment method
       const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
 
       // Handle different payment methods
+      let stripePaymentMethodId = null;
+
       if (selectedPayment === 'card') {
-        // Process Stripe payment
-        const success = await handleStripePayment();
-        if (!success) return;
-      } else if (selectedPayment === 'apple-pay') {
-        alert('Please use the Apple Pay button below to complete your payment');
-        return;
-      } else if (selectedPayment === 'google-pay') {
-        alert('Please use the Google Pay button below to complete your payment');
+        stripePaymentMethodId = await handleStripePayment();
+        if (!stripePaymentMethodId) return; // Halts if card errors
+      } else if (selectedPayment === 'express') {
+        alert('Please use the Express Checkout button above to complete your Apple/Google Pay purchase.');
         return;
       }
-      // For cash payment, proceed directly
 
-      showSuccessModal();
+      // Construct order payload
+      let specialInstElem = document.getElementById("specialInstructions");
+      let specialInst = specialInstElem ? specialInstElem.value.trim() : "";
+
+      let finalNotes = "";
+
+      if (delivery) {
+        let addressParts = [
+          document.getElementById("street").value.trim(),
+          document.getElementById("city").value.trim(),
+          document.getElementById("postal").value.trim()
+        ].filter(x => x).join(", ");
+
+        let deliveryNotes = document.getElementById("notes").value.trim();
+
+        if (addressParts) finalNotes += "Delivery Address: " + addressParts + "\n";
+        if (deliveryNotes) finalNotes += "Delivery Note: " + deliveryNotes + "\n";
+      }
+
+      if (specialInst) {
+        finalNotes += "Special Instructions: " + specialInst;
+      }
+
+      finalNotes = finalNotes.trim();
+
+      const payload = {
+        name: document.getElementById("firstName").value + " " + document.getElementById("lastName").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        notes: finalNotes,
+        cart: cart,
+        payment_method_id: stripePaymentMethodId, // Attach payment token
+        order_type: delivery ? 'delivery' : 'pickup'
+      };
+
+      const originalText = placeOrderBtn.innerHTML;
+      try {
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.innerHTML = "Processing...";
+
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+        const res = await fetch("create_order.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify(payload)
+        });
+
+        clearTimeout(timeoutId);
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.removeItem("cart");
+          showSuccessModal(data.data.order_id);
+        } else {
+          alert("Validation failed: " + data.message);
+          placeOrderBtn.disabled = false;
+          placeOrderBtn.innerHTML = originalText;
+        }
+
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          alert("The server took too long to respond. Please check your internet connection before retrying to prevent double charges.");
+        } else {
+          alert("Server error processing order: " + err.message);
+        }
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.innerHTML = originalText;
+      }
     });
 
-    function showSuccessModal() {
-      // Generate random order number
-      const orderNum = Math.floor(10000 + Math.random() * 90000);
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.innerText = message;
+      toast.classList.remove("translate-y-10", "opacity-0", "pointer-events-none");
+      toast.classList.add("translate-y-0", "opacity-100");
+      setTimeout(() => {
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("translate-y-10", "opacity-0", "pointer-events-none");
+      }, 3000);
+    }
+
+    function showSuccessModal(backendOrderId) {
+      const orderNum = backendOrderId || Math.floor(10000 + Math.random() * 90000);
       document.getElementById('orderNumber').textContent = '#' + orderNum;
 
       // Show success modal
@@ -945,11 +1021,11 @@
       }, 100);
 
       // Show toast
-      toast.classList.remove('toast-hide');
-      toast.classList.add('toast-show');
+      toast.classList.remove("translate-y-10", "opacity-0", "pointer-events-none");
+      toast.classList.add("translate-y-0", "opacity-100");
       setTimeout(() => {
-        toast.classList.remove('toast-show');
-        toast.classList.add('toast-hide');
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("translate-y-10", "opacity-0", "pointer-events-none");
       }, 3000);
     }
 
@@ -970,7 +1046,36 @@
         }
       });
     });
+
+    // ============================================
+    // MOBILE MENU TOGGLE
+    // ============================================
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
   </script>
 
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 mt-8 py-8 text-center text-gray-600 text-sm">
+    <p class="mb-2">&copy; 2026 Chicken Curry Messina. All rights reserved.</p>
+    <div class="space-x-4">
+      <a href="privacy.html" class="hover:text-spice-gold transition">Privacy Policy</a>
+      <a href="terms.html" class="hover:text-spice-gold transition">Terms &amp; Conditions</a>
+    </div>
+  </footer>
+
 </body>
+
 </html>
