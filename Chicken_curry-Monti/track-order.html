@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Order - Chicken Curry Messina</title>
+  <meta name="robots" content="noindex, nofollow">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'spice-gold': '#D4AF37',
+            'warm-amber': '#FF8C00',
+            'deep-curry': '#B8860B',
+            'rich-brown': '#8B4513'
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-black text-white font-sans min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-spice-gold/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="home.html" class="flex items-center">
+          <div class="text-2xl font-bold text-spice-gold">Chicken Curry</div>
+          <div class="hidden sm:block ml-2 text-sm text-gray-300">Messina</div>
+        </a>
+        <nav class="flex items-center gap-4">
+          <a href="menu.html" class="text-sm text-gray-300 hover:text-spice-gold transition">Menu</a>
+          <a href="home.html" class="text-sm text-gray-300 hover:text-spice-gold transition">Home</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 pt-24 pb-16 px-4">
+    <div class="max-w-lg mx-auto">
+
+      <!-- Track Order Form -->
+      <div id="trackForm" class="bg-gray-900/60 border border-spice-gold/20 rounded-2xl p-8">
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 bg-spice-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="search" class="w-8 h-8 text-spice-gold"></i>
+          </div>
+          <h1 class="text-3xl font-bold font-serif text-spice-gold mb-2">Track Your Order</h1>
+          <p class="text-gray-400">Enter your order number and phone number to see real-time status</p>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label for="orderId" class="block text-sm font-semibold text-gray-300 mb-1.5">Order Number</label>
+            <input type="number" id="orderId" placeholder="e.g. 1042"
+              class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-spice-gold transition-colors">
+          </div>
+          <div>
+            <label for="trackPhone" class="block text-sm font-semibold text-gray-300 mb-1.5">Phone Number</label>
+            <input type="tel" id="trackPhone" placeholder="Your phone number used during order"
+              class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-spice-gold transition-colors">
+          </div>
+          <button id="trackBtn"
+            class="w-full bg-gradient-to-r from-spice-gold to-warm-amber text-black font-bold py-3.5 rounded-full text-lg shadow-[0_4px_15px_rgba(212,175,55,0.4)] hover:scale-[1.02] transition-transform duration-300 mt-2">
+            Track Order
+          </button>
+          <p id="trackError" class="text-sm text-red-400 text-center hidden"></p>
+        </div>
+      </div>
+
+      <!-- Order Status Result (hidden by default) -->
+      <div id="orderResult" class="hidden mt-8">
+
+        <!-- Status Card -->
+        <div class="bg-gray-900/60 border border-spice-gold/20 rounded-2xl p-8 mb-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <p class="text-sm text-gray-400">Order</p>
+              <p id="resultOrderId" class="text-2xl font-bold text-spice-gold">#---</p>
+            </div>
+            <span id="statusBadge" class="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wide">---</span>
+          </div>
+
+          <!-- Status Timeline -->
+          <div class="space-y-0" id="statusTimeline">
+            <div class="flex items-center gap-4 py-3" data-step="pending">
+              <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all step-circle">
+                <i data-lucide="clock" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="font-semibold step-title">Order Received</p>
+                <p class="text-sm text-gray-500">Your order has been received</p>
+              </div>
+            </div>
+            <div class="ml-5 w-px h-6 bg-gray-700 step-connector" data-after="pending"></div>
+
+            <div class="flex items-center gap-4 py-3" data-step="preparing">
+              <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all step-circle">
+                <i data-lucide="chef-hat" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="font-semibold step-title">Preparing</p>
+                <p class="text-sm text-gray-500">Our chefs are preparing your food</p>
+              </div>
+            </div>
+            <div class="ml-5 w-px h-6 bg-gray-700 step-connector" data-after="preparing"></div>
+
+            <div class="flex items-center gap-4 py-3" data-step="ready">
+              <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all step-circle">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="font-semibold step-title">Ready</p>
+                <p class="text-sm text-gray-500" id="readySubtext">Your order is ready for pickup</p>
+              </div>
+            </div>
+            <div class="ml-5 w-px h-6 bg-gray-700 step-connector" data-after="ready"></div>
+
+            <div class="flex items-center gap-4 py-3" data-step="completed">
+              <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all step-circle">
+                <i data-lucide="party-popper" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="font-semibold step-title">Completed</p>
+                <p class="text-sm text-gray-500">Enjoy your meal!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cancelled Notice -->
+          <div id="cancelledNotice" class="hidden mt-6 p-4 bg-red-900/30 border border-red-500/30 rounded-xl text-center">
+            <i data-lucide="x-circle" class="w-8 h-8 text-red-400 mx-auto mb-2"></i>
+            <p class="text-red-400 font-semibold">This order has been cancelled</p>
+            <p class="text-sm text-gray-400 mt-1">Please contact the restaurant if you have questions</p>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="bg-gray-900/60 border border-spice-gold/20 rounded-2xl p-8 mb-6">
+          <h3 class="text-lg font-bold mb-4 text-spice-gold">Order Details</h3>
+          <div class="space-y-3" id="orderItemsList"></div>
+          <div class="border-t border-gray-700 mt-4 pt-4 flex justify-between">
+            <span class="font-bold">Total</span>
+            <span id="resultTotal" class="text-xl font-bold text-spice-gold">€0.00</span>
+          </div>
+          <div class="mt-3 flex justify-between text-sm text-gray-400">
+            <span>Order Type</span>
+            <span id="resultOrderType" class="capitalize">Pickup</span>
+          </div>
+          <div class="mt-1 flex justify-between text-sm text-gray-400">
+            <span>Ordered at</span>
+            <span id="resultTime">--</span>
+          </div>
+        </div>
+
+        <!-- Track Another -->
+        <button id="trackAnotherBtn"
+          class="w-full border border-spice-gold/30 text-spice-gold font-semibold py-3 rounded-full hover:bg-spice-gold/10 transition text-center">
+          Track Another Order
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 text-center text-sm text-gray-500">
+    <p>&copy; 2025 Chicken Curry Messina. All rights reserved.</p>
+    <div class="flex justify-center gap-6 mt-3">
+      <a href="privacy.html" class="hover:text-spice-gold transition">Privacy</a>
+      <a href="terms.html" class="hover:text-spice-gold transition">Terms</a>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    const STATUSES = ['pending', 'preparing', 'ready', 'completed'];
+    const STATUS_COLORS = {
+      pending: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500' },
+      preparing: { bg: 'bg-orange-500/20', text: 'text-orange-400', border: 'border-orange-500' },
+      ready: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500' },
+      completed: { bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500' },
+      cancelled: { bg: 'bg-red-500/20', text: 'text-red-400', border: 'border-red-500' },
+    };
+
+    const trackBtn = document.getElementById('trackBtn');
+    const trackError = document.getElementById('trackError');
+    const trackForm = document.getElementById('trackForm');
+    const orderResult = document.getElementById('orderResult');
+    const trackAnotherBtn = document.getElementById('trackAnotherBtn');
+
+    let pollingInterval = null;
+
+    trackBtn.addEventListener('click', () => {
+      const orderId = document.getElementById('orderId').value.trim();
+      const phone = document.getElementById('trackPhone').value.trim();
+
+      if (!orderId || !phone) {
+        trackError.textContent = 'Please enter both your order number and phone number.';
+        trackError.classList.remove('hidden');
+        return;
+      }
+
+      trackError.classList.add('hidden');
+      trackBtn.disabled = true;
+      trackBtn.textContent = 'Looking up...';
+
+      fetchOrderStatus(orderId, phone, true);
+    });
+
+    trackAnotherBtn.addEventListener('click', () => {
+      orderResult.classList.add('hidden');
+      trackForm.classList.remove('hidden');
+      document.getElementById('orderId').value = '';
+      document.getElementById('trackPhone').value = '';
+      if (pollingInterval) clearInterval(pollingInterval);
+    });
+
+    async function fetchOrderStatus(orderId, phone, isInitial) {
+      try {
+        const res = await fetch(`get_order_status.php?id=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(phone)}`);
+        const data = await res.json();
+
+        if (data.success) {
+          renderOrder(data.data);
+          if (isInitial) {
+            trackForm.classList.add('hidden');
+            orderResult.classList.remove('hidden');
+            // Start polling every 15 seconds for live updates
+            if (pollingInterval) clearInterval(pollingInterval);
+            if (data.data.status !== 'completed' && data.data.status !== 'cancelled') {
+              pollingInterval = setInterval(() => fetchOrderStatus(orderId, phone, false), 15000);
+            }
+          }
+        } else {
+          if (isInitial) {
+            trackError.textContent = data.message;
+            trackError.classList.remove('hidden');
+          }
+        }
+      } catch (err) {
+        if (isInitial) {
+          trackError.textContent = 'Could not connect to server. Please try again.';
+          trackError.classList.remove('hidden');
+        }
+      } finally {
+        if (isInitial) {
+          trackBtn.disabled = false;
+          trackBtn.textContent = 'Track Order';
+        }
+      }
+    }
+
+    function renderOrder(data) {
+      // Order ID & badge
+      document.getElementById('resultOrderId').textContent = '#' + data.order_id;
+      const badge = document.getElementById('statusBadge');
+      const colors = STATUS_COLORS[data.status] || STATUS_COLORS.pending;
+      badge.className = `px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wide ${colors.bg} ${colors.text}`;
+      badge.textContent = data.status;
+
+      // Cancelled notice
+      const cancelledNotice = document.getElementById('cancelledNotice');
+      if (data.status === 'cancelled') {
+        cancelledNotice.classList.remove('hidden');
+      } else {
+        cancelledNotice.classList.add('hidden');
+      }
+
+      // Update ready subtext based on order type
+      const readySubtext = document.getElementById('readySubtext');
+      if (data.order_type === 'delivery') {
+        readySubtext.textContent = 'Your order is out for delivery';
+      } else {
+        readySubtext.textContent = 'Your order is ready for pickup';
+      }
+
+      // Status timeline
+      const currentIdx = STATUSES.indexOf(data.status);
+      STATUSES.forEach((step, idx) => {
+        const stepEl = document.querySelector(`[data-step="${step}"]`);
+        const circle = stepEl.querySelector('.step-circle');
+        const title = stepEl.querySelector('.step-title');
+        const connector = document.querySelector(`[data-after="${step}"]`);
+
+        if (data.status === 'cancelled') {
+          circle.className = 'w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all step-circle border-gray-700 text-gray-600';
+          title.className = 'font-semibold step-title text-gray-600';
+          if (connector) connector.className = 'ml-5 w-px h-6 bg-gray-800 step-connector';
+        } else if (idx <= currentIdx) {
+          circle.className = 'w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all step-circle border-spice-gold bg-spice-gold/20 text-spice-gold';
+          title.className = 'font-semibold step-title text-white';
+          if (connector) connector.className = 'ml-5 w-px h-6 bg-spice-gold step-connector';
+        } else {
+          circle.className = 'w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all step-circle border-gray-700 text-gray-600';
+          title.className = 'font-semibold step-title text-gray-500';
+          if (connector) connector.className = 'ml-5 w-px h-6 bg-gray-700 step-connector';
+        }
+      });
+
+      // Order items list
+      const listEl = document.getElementById('orderItemsList');
+      listEl.innerHTML = '';
+      data.items.forEach(item => {
+        const itemTotal = (parseFloat(item.price) * parseInt(item.quantity)).toFixed(2);
+        const sizeText = item.size ? ` (${item.size})` : '';
+        listEl.innerHTML += `
+          <div class="flex justify-between items-center py-2 border-b border-gray-800">
+            <div>
+              <span class="text-white">${item.quantity}x ${item.item_name}${sizeText}</span>
+              <span class="text-xs text-gray-500 ml-2 capitalize">${item.category}</span>
+            </div>
+            <span class="text-spice-gold font-semibold">€${itemTotal}</span>
+          </div>`;
+      });
+
+      // Total & meta
+      document.getElementById('resultTotal').textContent = '€' + parseFloat(data.total).toFixed(2);
+      document.getElementById('resultOrderType').textContent = data.order_type || 'Pickup';
+      document.getElementById('resultTime').textContent = new Date(data.created_at).toLocaleString();
+
+      // Stop polling if completed or cancelled
+      if (data.status === 'completed' || data.status === 'cancelled') {
+        if (pollingInterval) clearInterval(pollingInterval);
+      }
+
+      lucide.createIcons();
+    }
+
+    // Check URL params for direct link (e.g. track-order.html?id=123&phone=+39...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlId = urlParams.get('id');
+    const urlPhone = urlParams.get('phone');
+    if (urlId && urlPhone) {
+      document.getElementById('orderId').value = urlId;
+      document.getElementById('trackPhone').value = urlPhone;
+      trackBtn.click();
+    }
+  </script>
+  <script src="shared-components.js"></script>
+</body>
+
+</html>

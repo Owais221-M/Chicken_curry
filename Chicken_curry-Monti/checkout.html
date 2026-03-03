@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout | Chicken Curry Messina</title>
+  <meta name="description"
+    content="Complete your order at Chicken Curry Messina. Pickup or delivery for authentic Indian & Bangladeshi cuisine.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'spice-gold': '#D4AF37',
+            'warm-amber': '#FF8C00',
+            'deep-curry': '#B8860B',
+            'rich-brown': '#8B4513'
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Apple Pay Button Styling */
+    .apple-pay-button-with-text {
+      display: inline-block;
+      -webkit-appearance: -apple-pay-button;
+      appearance: -apple-pay-button;
+      -apple-pay-button-type: buy;
+    }
+
+    .apple-pay-button-black-with-text {
+      -apple-pay-button-style: black;
+    }
+
+    /* Stripe Element Styling */
+    .StripeElement {
+      padding: 12px;
+    }
+
+    .StripeElement--focus {
+      border-color: #D4AF37;
+    }
+
+    .StripeElement--invalid {
+      border-color: #ef4444;
+    }
+  </style>
+</head>
+
+<body class="bg-black text-white font-sans">
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-spice-gold/20">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="text-2xl font-bold text-spice-gold">Chicken Curry</div>
+        <div class="hidden sm:block ml-2 text-sm text-gray-300">Messina</div>
+      </div>
+      <nav class="hidden md:flex space-x-8">
+        <a href="home.html" class="text-gray-300 hover:text-spice-gold transition-colors">Home</a>
+        <a href="menu.html" class="text-gray-300 hover:text-spice-gold transition-colors">Menu</a>
+        <a href="#" class="text-spice-gold font-semibold">Checkout</a>
+      </nav>
+      <button id="mobileMenuBtn" class="md:hidden text-white focus:outline-none">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu"
+      class="md:hidden hidden bg-black/95 backdrop-blur-md border-b border-spice-gold/20 absolute w-full left-0 top-16 shadow-2xl">
+      <div class="px-4 py-6 flex flex-col space-y-4">
+        <a href="home.html"
+          class="text-gray-300 hover:text-spice-gold transition-colors text-lg mobile-link block py-3 w-full">Home</a>
+        <a href="menu.html"
+          class="text-gray-300 hover:text-spice-gold transition-colors text-lg mobile-link block py-3 w-full">Menu</a>
+        <a href="#"
+          class="text-spice-gold transition-colors text-lg mobile-link font-semibold block py-3 w-full">Checkout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Opening Hours Banner (shown when kitchen is closed) -->
+  <div id="closedBanner"
+    class="hidden bg-red-900/90 border-b border-red-500/50 text-white text-center py-3 px-4 text-sm font-medium pt-20">
+    🕐 <strong>We're currently closed.</strong> Our kitchen is open daily from <strong>12:00 – 22:00</strong>. You can
+    still browse — orders will be processed when we reopen!
+  </div>
+
+  <!-- Main Content -->
+  <main class="pt-24 pb-32 max-w-7xl mx-auto px-4">
+
+    <!-- Page Title -->
+    <section class="text-center mb-12">
+      <h1
+        class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500"
+        data-i18n="checkout_complete_title">
+        Complete Your Order
+      </h1>
+      <p class="text-gray-300 max-w-2xl mx-auto" data-i18n="checkout_complete_sub">
+        Just a few more details and your delicious meal will be ready for pickup!
+      </p>
+    </section>
+
+    <!-- Progress Steps -->
+    <div class="max-w-3xl mx-auto mb-12">
+      <div class="flex items-center justify-between">
+        <div class="flex flex-col items-center flex-1">
+          <div
+            class="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-black font-bold mb-2">
+            <i data-lucide="check" class="w-5 h-5"></i>
+          </div>
+          <span class="text-xs md:text-sm text-spice-gold font-semibold">Cart</span>
+        </div>
+        <div class="h-1 flex-1 bg-gradient-to-r from-amber-500 to-orange-500 mx-2"></div>
+        <div class="flex flex-col items-center flex-1">
+          <div
+            class="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-black font-bold mb-2">
+            2
+          </div>
+          <span class="text-xs md:text-sm text-spice-gold font-semibold">Details</span>
+        </div>
+        <div class="h-1 flex-1 bg-gray-700 mx-2"></div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 font-bold mb-2">
+            3
+          </div>
+          <span class="text-xs md:text-sm text-gray-400">Confirm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout Grid -->
+    <div class="grid lg:grid-cols-3 gap-8">
+
+      <!-- Left Column - Forms -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- Order Type Selection -->
+        <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center">
+            <i data-lucide="shopping-bag" class="w-6 h-6 mr-3 text-spice-gold"></i>
+            <span data-i18n="checkout_order_type">Order Type</span>
+          </h2>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <label class="relative cursor-pointer">
+              <input type="radio" name="orderType" value="pickup" checked class="peer sr-only" />
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-6 transition-all hover:border-spice-gold/50">
+                <div class="flex items-center justify-between mb-3">
+                  <i data-lucide="store" class="w-8 h-8 text-spice-gold"></i>
+                  <div
+                    class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                    <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
+                  </div>
+                </div>
+                <h3 class="font-bold text-lg mb-1" data-i18n="checkout_pickup">Pickup</h3>
+                <p class="text-sm text-gray-400" data-i18n="checkout_time_pickup">Ready in 15-20 mins</p>
+              </div>
+            </label>
+
+            <label class="relative cursor-pointer">
+              <input type="radio" name="orderType" value="delivery" class="peer sr-only" />
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-6 transition-all hover:border-spice-gold/50">
+                <div class="flex items-center justify-between mb-3">
+                  <i data-lucide="bike" class="w-8 h-8 text-spice-gold"></i>
+                  <div
+                    class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                    <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
+                  </div>
+                </div>
+                <h3 class="font-bold text-lg mb-1" data-i18n="checkout_delivery">Delivery (€3.00)</h3>
+                <p class="text-sm text-gray-400" data-i18n="checkout_time_delivery">30-45 mins</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center">
+            <i data-lucide="user" class="w-6 h-6 mr-3 text-spice-gold"></i>
+            <span data-i18n="checkout_contact">Contact Information</span>
+          </h2>
+
+          <form id="checkoutForm" class="space-y-5">
+            <div class="grid md:grid-cols-2 gap-5">
+              <div>
+                <label for="firstName" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_fname">First Name
+                  *</label>
+                <input id="firstName" type="text"
+                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                  placeholder="John" data-i18n="checkout_fname" required />
+              </div>
+              <div>
+                <label for="lastName" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_lname">Last Name
+                  *</label>
+                <input id="lastName" type="text"
+                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                  placeholder="Doe" data-i18n="checkout_lname" required />
+              </div>
+            </div>
+
+            <div>
+              <label for="email" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_email">Email Address
+                *</label>
+              <input id="email" type="email"
+                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                placeholder="john.doe@example.com" data-i18n="checkout_email" required />
+            </div>
+
+            <div>
+              <label for="phone" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_phone">Phone Number
+                *</label>
+              <input id="phone" type="tel"
+                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                placeholder="+39 123 456 7890" data-i18n="checkout_phone" required />
+            </div>
+          </form>
+        </div>
+
+        <!-- Delivery Address (shown when delivery is selected) -->
+        <div id="deliveryAddress"
+          class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8 hidden">
+          <h2 class="text-2xl font-bold mb-6 flex items-center">
+            <i data-lucide="map-pin" class="w-6 h-6 mr-3 text-spice-gold"></i>
+            <span data-i18n="checkout_delivery_addr">Delivery Address</span>
+          </h2>
+
+          <div class="space-y-5">
+            <div>
+              <label for="street" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_street">Street Address
+                *</label>
+              <input id="street" type="text"
+                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                placeholder="Via Roma, 123" data-i18n="checkout_street" />
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-5">
+              <div>
+                <label for="city" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_city">City *</label>
+                <input id="city" type="text"
+                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                  placeholder="Messina" value="Messina" data-i18n="checkout_city" />
+              </div>
+              <div>
+                <label for="postal" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_postal">Postal Code
+                  *</label>
+                <input id="postal" type="text"
+                  class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white transition-colors"
+                  placeholder="98100" data-i18n="checkout_postal" />
+              </div>
+            </div>
+
+            <div>
+              <label for="notes" class="text-sm text-gray-400 block mb-2" data-i18n="checkout_notes">Delivery
+                Notes</label>
+              <textarea id="notes" rows="3"
+                class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white resize-none transition-colors"
+                placeholder="Apartment number, building entrance, etc."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center">
+            <i data-lucide="credit-card" class="w-6 h-6 mr-3 text-spice-gold"></i>
+            <span data-i18n="checkout_payment">Payment Method</span>
+          </h2>
+
+          <div class="space-y-4">
+            <!-- Cash Payment -->
+            <label class="relative cursor-pointer block">
+              <input type="radio" name="payment" value="cash" checked class="peer sr-only" />
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
+                <div class="flex items-center">
+                  <i data-lucide="banknote" class="w-6 h-6 text-spice-gold mr-4"></i>
+                  <div>
+                    <h3 class="font-semibold">Cash on Delivery/Pickup</h3>
+                    <p class="text-sm text-gray-400">Pay when you receive your order</p>
+                  </div>
+                </div>
+                <div
+                  class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                  <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
+                </div>
+              </div>
+            </label>
+
+            <!-- Card Payment (Stripe) -->
+            <label class="relative cursor-pointer block">
+              <input type="radio" name="payment" value="card" class="peer sr-only" id="cardPaymentRadio" />
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
+                <div class="flex items-center">
+                  <i data-lucide="credit-card" class="w-6 h-6 text-spice-gold mr-4"></i>
+                  <div>
+                    <h3 class="font-semibold" data-i18n="checkout_card">Card Payment</h3>
+                    <p class="text-sm text-gray-400">Debit or Credit Card</p>
+                  </div>
+                </div>
+                <div
+                  class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                  <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
+                </div>
+              </div>
+            </label>
+
+            <!-- Stripe Card Details Section -->
+            <div id="cardDetailsSection" class="hidden overflow-hidden transition-all duration-300">
+              <div class="bg-black/30 border border-spice-gold/10 rounded-xl p-6 mt-4 space-y-4">
+                <h4 class="font-semibold text-spice-gold mb-4">Card Details</h4>
+
+                <!-- Stripe Card Element -->
+                <div id="card-element" class="bg-black/50 border border-spice-gold/20 rounded-lg px-4 py-3">
+                  <!-- Stripe.js injects the Card Element here -->
+                </div>
+
+                <!-- Card errors -->
+                <div id="card-errors" class="text-red-400 text-sm hidden"></div>
+
+                <div class="flex items-center space-x-2 text-xs text-gray-400 mt-4">
+                  <i data-lucide="lock" class="w-4 h-4 text-spice-gold"></i>
+                  <span>Secured by Stripe - Your card information is encrypted</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Express Wallet Checkout (Apple Pay / Google Pay / Link) -->
+            <label class="relative cursor-pointer block">
+              <input type="radio" name="payment" value="express" class="peer sr-only" id="expressPaymentRadio" />
+              <div
+                class="border-2 border-gray-700 peer-checked:border-spice-gold peer-checked:bg-spice-gold/10 peer-focus-visible:ring-2 peer-focus-visible:ring-spice-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black rounded-xl p-4 transition-all hover:border-spice-gold/50 flex items-center justify-between">
+                <div class="flex items-center">
+                  <i data-lucide="smartphone" class="w-6 h-6 text-spice-gold mr-4"></i>
+                  <div>
+                    <h3 class="font-semibold" data-i18n="checkout_apple">Express Checkout</h3>
+                    <p class="text-sm text-gray-400">Apple Pay, Google Pay</p>
+                  </div>
+                </div>
+                <div
+                  class="w-6 h-6 border-2 border-gray-700 peer-checked:border-spice-gold rounded-full transition-all flex items-center justify-center peer-checked:bg-spice-gold">
+                  <i data-lucide="check" class="w-4 h-4 text-black hidden peer-checked:block"></i>
+                </div>
+              </div>
+            </label>
+
+            <!-- Stripe Express Button (Hidden until selected) -->
+            <div id="expressButtonContainer" class="hidden mt-4">
+              <div class="bg-black/30 border border-spice-gold/10 rounded-xl p-4">
+                <div id="payment-request-button" class="w-full h-12 rounded-xl">
+                  <!-- Stripe Payment Button inserts here -->
+                </div>
+                <!-- Warning shown if no compatible wallets detected -->
+                <p id="express-unavailable-msg" class="text-xs text-gray-500 mt-2 hidden text-center">No compatible
+                  digital wallet detected on your device.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Special Instructions -->
+        <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center">
+            <i data-lucide="message-square" class="w-6 h-6 mr-3 text-spice-gold"></i>
+            <span data-i18n="checkout_special">Special Instructions</span>
+          </h2>
+
+          <textarea id="specialInstructions" rows="4"
+            class="w-full bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-spice-gold text-white resize-none transition-colors"
+            placeholder="Any special requests? Extra spicy? Less oil? Let us know!"></textarea>
+        </div>
+      </div>
+
+      <!-- Right Column - Order Summary -->
+      <div class="lg:col-span-1">
+        <div
+          class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 md:p-8 sticky top-24">
+          <h2 class="text-2xl font-bold mb-6 flex items-center">
+            <i data-lucide="shopping-cart" class="w-6 h-6 mr-3 text-spice-gold"></i>
+            <span data-i18n="checkout_summary">Order Summary</span>
+          </h2>
+
+          <!-- Cart Items -->
+          <div id="orderItems" class="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2">
+            <!-- Sample Item 1 -->
+            <div class="flex justify-between items-start pb-4 border-b border-gray-800">
+              <div class="flex-1">
+                <h3 class="font-semibold text-white mb-1">Chicken Biryani</h3>
+                <p class="text-sm text-gray-400">Large</p>
+                <p class="text-sm text-gray-400">Qty: 1</p>
+              </div>
+              <span class="text-spice-gold font-semibold">€12.00</span>
+            </div>
+
+            <!-- Sample Item 2 -->
+            <div class="flex justify-between items-start pb-4 border-b border-gray-800">
+              <div class="flex-1">
+                <h3 class="font-semibold text-white mb-1">Build Your Kebab</h3>
+                <p class="text-sm text-gray-400">Chicken, Lettuce, Tomato</p>
+                <p class="text-sm text-gray-400">Qty: 2</p>
+              </div>
+              <span class="text-spice-gold font-semibold">€16.00</span>
+            </div>
+
+            <!-- Sample Item 3 -->
+            <div class="flex justify-between items-start pb-4 border-b border-gray-800">
+              <div class="flex-1">
+                <h3 class="font-semibold text-white mb-1">Butter Chicken Curry</h3>
+                <p class="text-sm text-gray-400">Medium spice</p>
+                <p class="text-sm text-gray-400">Qty: 1</p>
+              </div>
+              <span class="text-spice-gold font-semibold">€14.00</span>
+            </div>
+          </div>
+
+          <!-- Price Breakdown -->
+          <div class="space-y-3 mb-6 pb-6 border-b border-gray-800">
+            <div class="flex justify-between text-gray-300">
+              <span data-i18n="checkout_subtotal">Subtotal</span>
+              <span id="subtotal">€42.00</span>
+            </div>
+            <div class="flex justify-between text-gray-300">
+              <span data-i18n="checkout_service">Service Fee</span>
+              <span id="serviceFee">€2.00</span>
+            </div>
+            <div id="deliveryFeeRow" class="flex justify-between text-gray-300 hidden">
+              <span data-i18n="checkout_delivery">Delivery Fee</span>
+              <span id="deliveryFee">€3.00</span>
+            </div>
+            <div id="discountRow" class="flex justify-between text-green-400 hidden">
+              <span id="discountLabel">Discount</span>
+              <span id="discountAmount">-€0.00</span>
+            </div>
+          </div>
+
+          <!-- Total -->
+          <div class="flex justify-between items-center mb-6">
+            <span class="text-xl font-bold">Total</span>
+            <span id="totalPrice" class="text-3xl font-bold text-spice-gold">€44.00</span>
+          </div>
+
+          <!-- Terms & Privacy Consent -->
+          <label class="flex items-start gap-3 cursor-pointer mb-4">
+            <input type="checkbox" id="termsConsent" required class="accent-spice-gold w-4 h-4 mt-1 flex-shrink-0">
+            <span class="text-xs text-gray-400 leading-relaxed">
+              I agree to the <a href="terms.html" target="_blank" class="text-spice-gold underline hover:text-amber-400">Terms & Conditions</a>
+              and <a href="privacy.html" target="_blank" class="text-spice-gold underline hover:text-amber-400">Privacy Policy</a>.
+              My data will be processed to fulfill this order.
+            </span>
+          </label>
+
+          <!-- Coupon Code -->
+          <div class="mb-4">
+            <div class="flex gap-2">
+              <input type="text" id="couponCode" placeholder="Have a coupon code?" class="flex-1 bg-black/50 border border-spice-gold/20 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-spice-gold transition-colors">
+              <button type="button" id="applyCouponBtn" class="bg-spice-gold/20 border border-spice-gold/30 text-spice-gold px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-spice-gold/30 transition">Apply</button>
+            </div>
+            <p id="couponMsg" class="text-xs mt-1.5 hidden"></p>
+          </div>
+
+          <!-- Place Order Button -->
+          <button id="placeOrderBtn"
+            class="w-full bg-gradient-to-r from-spice-gold to-warm-amber text-black font-bold py-4 rounded-full text-lg shadow-[0_4px_15px_rgba(212,175,55,0.4)] hover:scale-[1.02] transition-transform duration-300"
+            data-i18n="checkout_place">
+            Place Order
+          </button>
+
+          <!-- Security Badge -->
+          <div class="mt-6 flex items-center justify-center text-sm text-gray-400">
+            <i data-lucide="shield-check" class="w-4 h-4 mr-2 text-spice-gold"></i>
+            Secure checkout
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Success Modal -->
+  <div id="successModal"
+    class="fixed inset-0 bg-black/80 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+    <div
+      class="bg-gradient-to-br from-gray-900 to-black border border-spice-gold/20 rounded-3xl p-10 text-center max-w-md mx-4 transform scale-95 transition-transform duration-300">
+      <div
+        class="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="check" class="w-10 h-10 text-black"></i>
+      </div>
+      <h2 class="text-3xl font-bold text-spice-gold mb-4">Order Confirmed!</h2>
+      <p class="text-gray-300 mb-2">Thank you for your order!</p>
+      <p class="text-gray-400 text-sm mb-6">
+        <span id="orderTypeMessage">Your food will be ready for pickup in 15-20 minutes</span>
+      </p>
+      <div class="bg-black/50 rounded-xl p-4 mb-6">
+        <p class="text-sm text-gray-400 mb-1">Order Number</p>
+        <p id="orderNumber" class="text-2xl font-bold text-spice-gold">#12345</p>
+      </div>
+      <div class="space-y-3">
+        <button onclick="window.location.href='menu.html'"
+          class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-black px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all">
+          Back to Menu
+        </button>
+        <button onclick="window.location.href='home.html'"
+          class="w-full border-2 border-spice-gold text-spice-gold px-6 py-3 rounded-xl font-semibold hover:bg-spice-gold hover:text-black transition-all">
+          Go to Home
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast"
+    class="translate-y-10 opacity-0 pointer-events-none fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-spice-gold text-black px-6 py-3 rounded-full transition-all duration-300 z-50 font-semibold">
+    Order placed successfully!
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 border-t border-spice-gold/20 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="col-span-1 md:col-span-2">
+          <div class="text-2xl font-bold text-spice-gold mb-4">
+            Chicken Curry
+          </div>
+          <p class="text-gray-300 mb-4">
+            Authentic Indian & Bangladeshi cuisine in the heart of Messina, Sicily. Where traditional flavors meet
+            modern hospitality.
+          </p>
+          <div class="flex items-center space-x-2 text-spice-gold">
+            <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+            <span class="font-semibold">4.8</span>
+            <span class="text-gray-300">(89 reviews)</span>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-4">Menu</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="menu.html#kebab-builder" class="hover:text-spice-gold transition-colors">Build Kebab</a></li>
+            <li><a href="menu.html#biryani-section" class="hover:text-spice-gold transition-colors">Biryani</a></li>
+            <li><a href="menu.html#curry-section" class="hover:text-spice-gold transition-colors">Curries</a></li>
+            <li><a href="menu.html" class="hover:text-spice-gold transition-colors">Full Menu</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-4">Visit Us</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li class="flex items-center space-x-2">
+              <i data-lucide="map-pin" class="w-4 h-4"></i>
+              <span>Messina, Sicily</span>
+            </li>
+            <li class="flex items-center space-x-2">
+              <i data-lucide="phone" class="w-4 h-4"></i>
+              <span>Call for Reservations</span>
+            </li>
+            <li class="flex items-center space-x-2">
+              <i data-lucide="clock" class="w-4 h-4"></i>
+              <span>Open Daily</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400 text-sm">
+          © 2026 Chicken Curry Messina. All rights reserved.
+        </p>
+        <div class="flex space-x-6 mt-4 md:mt-0">
+          <a href="javascript:void(0)" class="text-gray-400 hover:text-spice-gold transition-colors">
+            <i data-lucide="facebook" class="w-5 h-5"></i>
+          </a>
+          <a href="javascript:void(0)" class="text-gray-400 hover:text-spice-gold transition-colors">
+            <i data-lucide="instagram" class="w-5 h-5"></i>
+          </a>
+          <a href="javascript:void(0)" class="text-gray-400 hover:text-spice-gold transition-colors">
+            <i data-lucide="map-pin" class="w-5 h-5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="translations.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // ============================================
+    // STRIPE CONFIGURATION
+    // ============================================
+    // Replace with your actual Stripe publishable key
+    const STRIPE_PUBLISHABLE_KEY = 'pk_test_YOUR_PUBLISHABLE_KEY_HERE';
+    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+    const elements = stripe.elements();
+
+    // Custom styling for Stripe elements
+    const style = {
+      base: {
+        color: '#ffffff',
+        fontFamily: '"Outfit", sans-serif',
+        fontSize: '16px',
+        '::placeholder': {
+          color: '#9ca3af',
+        },
+      },
+      invalid: {
+        color: '#ef4444',
+        iconColor: '#ef4444',
+      },
+    };
+
+    // Create Stripe card element
+    const cardElement = elements.create('card', { style: style });
+
+    // ============================================
+    // STRIPE PAYMENT REQUEST (APPLE PAY / GOOGLE PAY)
+    // ============================================
+    let paymentRequest;
+    let prButton;
+
+    function initStripePaymentRequest(totalAmount) {
+      // Calculate amount in cents
+      const amountCents = Math.round(totalAmount * 100);
+
+      paymentRequest = stripe.paymentRequest({
+        country: 'IT',
+        currency: 'eur',
+        total: {
+          label: 'Chicken Curry Messina Order',
+          amount: amountCents,
+        },
+        requestPayerName: true,
+        requestPayerEmail: true,
+      });
+
+      prButton = elements.create('paymentRequestButton', {
+        paymentRequest: paymentRequest,
+        style: {
+          paymentRequestButton: {
+            type: 'default', // Using Express Checkout UI
+            theme: 'dark'
+          }
+        }
+      });
+
+      // Check the availability of the Payment Request API first
+      paymentRequest.canMakePayment().then(function (result) {
+        if (result) {
+          prButton.mount('#payment-request-button');
+          document.getElementById('express-unavailable-msg').classList.add('hidden');
+        } else {
+          document.getElementById('payment-request-button').style.display = 'none';
+          document.getElementById('express-unavailable-msg').classList.remove('hidden');
+          document.getElementById('expressPaymentRadio').parentElement.classList.add('opacity-50');
+        }
+      });
+
+      // Handle the payment authorization
+      paymentRequest.on('paymentmethod', async (ev) => {
+        console.log('Payment method attached successfully:', ev.paymentMethod);
+
+        // Construct express order payload
+        const delivery = document.querySelector('input[name="orderType"]:checked').value === 'delivery';
+        let addrNotes = document.getElementById("specialInstructions").value;
+        if (delivery) {
+          addrNotes = [
+            document.getElementById("street").value,
+            document.getElementById("city").value,
+            document.getElementById("postal").value,
+            document.getElementById("notes").value,
+            addrNotes
+          ].filter(x => x).join(", ");
+        }
+
+        const payload = {
+          name: document.getElementById("firstName").value || ev.payerName || "Express Checkout",
+          phone: document.getElementById("phone").value || ev.payerPhone || "No Phone",
+          notes: addrNotes,
+          cart: cart,
+          payment_method_id: ev.paymentMethod.id,
+          order_type: delivery ? 'delivery' : 'pickup'
+        };
+
+        try {
+          const res = await fetch("create_order.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (data.success) {
+            ev.complete('success');
+            localStorage.removeItem("cart");
+            showSuccessModal(data.data.order_id);
+          } else {
+            ev.complete('fail');
+            alert("Payment failed: " + data.message);
+          }
+        } catch (err) {
+          ev.complete('fail');
+          alert("Server error processing order");
+        }
+      });
+    }
+
+    // ============================================
+    // DYNAMIC CART RENDERING
+    // ============================================
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Legacy Cart Migration
+    cart = cart.map(item => {
+      if (item.name === 'Piccante Sauce') item.name = 'Piccante';
+      if (item.name === 'Yoghurt Sauce') item.name = 'Yoghurt';
+      return item;
+    });
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    const orderItemsContainer = document.getElementById("orderItems");
+    const subtotalEl = document.getElementById("subtotal");
+    const deliveryFeeRow = document.getElementById("deliveryFeeRow");
+    const deliveryFeeEl = document.getElementById("deliveryFee");
+    const totalPriceEl = document.getElementById("totalPrice");
+    const serviceFeeEl = document.getElementById("serviceFee");
+    const orderTypeRadios = document.querySelectorAll('input[name="orderType"]');
+    const deliveryAddressSection = document.getElementById('deliveryAddress');
+    const orderTypeMessage = document.getElementById('orderTypeMessage');
+
+    const SERVICE_FEE = 2.00;
+    const DELIVERY_FEE = 3.00;
+    let currentDeliveryFee = 0;
+    let appliedCoupon = null; // { offer_id, title, discount_type, discount_value, discount_amount }
+
+    function renderOrderItems() {
+      orderItemsContainer.innerHTML = "";
+
+      if (cart.length === 0) {
+        orderItemsContainer.innerHTML = `
+          <div class="text-center py-10 mt-8">
+            <svg class="w-16 h-16 mx-auto mb-4 opacity-30 text-spice-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <p class="text-gray-300 font-semibold mb-6">Your cart is empty.</p>
+            <a href="menu.html" class="inline-block bg-spice-gold text-black px-6 py-2 rounded-full font-bold hover:bg-warm-amber transition">Browse Menu</a>
+          </div>
+        `;
+        return 0;
+      }
+
+      let subtotal = 0;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        subtotal += itemTotal;
+
+        const details = [];
+        if (item.size) details.push(item.size);
+        if (item.ingredients && item.ingredients.length > 0) details.push(item.ingredients.join(", "));
+        if (item.sauces && item.sauces.length > 0) details.push(item.sauces.join(", "));
+
+        const detailsHTML = details.length > 0 ? `<p class="text-sm text-gray-400">${details.join(" | ")}</p>` : "";
+
+        const div = document.createElement("div");
+        div.className = "flex justify-between items-start pb-4 border-b border-gray-800";
+        div.innerHTML = `
+          <div class="flex-1">
+            <h3 class="font-semibold text-white mb-1">${item.name}</h3>
+            ${detailsHTML}
+            <p class="text-sm text-gray-400">Qty: ${item.qty}</p>
+          </div>
+          <span class="text-spice-gold font-semibold">€${itemTotal.toFixed(2)}</span>
+        `;
+        orderItemsContainer.appendChild(div);
+      });
+
+      return subtotal;
+    }
+
+    function updateTotals() {
+      const subotal = renderOrderItems();
+      subtotalEl.textContent = `€${subotal.toFixed(2)}`;
+      serviceFeeEl.textContent = `€${SERVICE_FEE.toFixed(2)}`;
+
+      // Apply coupon discount
+      let discount = 0;
+      const discountRow = document.getElementById('discountRow');
+      const discountLabel = document.getElementById('discountLabel');
+      const discountAmountEl = document.getElementById('discountAmount');
+
+      if (appliedCoupon) {
+        if (appliedCoupon.discount_type === 'percentage') {
+          discount = Math.round(subotal * (appliedCoupon.discount_value / 100) * 100) / 100;
+        } else if (appliedCoupon.discount_type === 'fixed') {
+          discount = Math.min(appliedCoupon.discount_value, subotal);
+        }
+        appliedCoupon.discount_amount = discount;
+        discountRow.classList.remove('hidden');
+        discountLabel.textContent = appliedCoupon.title || 'Discount';
+        discountAmountEl.textContent = `-€${discount.toFixed(2)}`;
+      } else {
+        discountRow.classList.add('hidden');
+      }
+
+      const total = Math.max(0, subotal + SERVICE_FEE + currentDeliveryFee - discount);
+      totalPriceEl.textContent = `€${total.toFixed(2)}`;
+
+      // Update Stripe Payment Request
+      if (typeof initStripePaymentRequest === 'function') {
+        if (!paymentRequest) {
+          initStripePaymentRequest(total);
+        } else {
+          paymentRequest.update({
+            total: {
+              label: 'Chicken Curry Messina Order',
+              amount: Math.round(total * 100),
+            }
+          });
+        }
+      }
+    }
+
+    updateTotals();
+
+    // ============================================
+    // COUPON CODE VALIDATION
+    // ============================================
+    const applyCouponBtn = document.getElementById('applyCouponBtn');
+    const couponCodeInput = document.getElementById('couponCode');
+    const couponMsg = document.getElementById('couponMsg');
+
+    if (applyCouponBtn) {
+      applyCouponBtn.addEventListener('click', async function handleApply() {
+        const code = couponCodeInput.value.trim();
+        if (!code) {
+          couponMsg.textContent = 'Please enter a coupon code';
+          couponMsg.className = 'text-xs mt-1.5 text-red-400';
+          return;
+        }
+
+        const subtotalValue = parseFloat(subtotalEl.textContent.replace('€', ''));
+
+        applyCouponBtn.disabled = true;
+        applyCouponBtn.textContent = '...';
+
+        try {
+          const res = await fetch('validate_coupon.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, subtotal: subtotalValue })
+          });
+          const data = await res.json();
+
+          if (data.success) {
+            appliedCoupon = data.data;
+            couponMsg.textContent = `✓ "${data.data.title}" applied! You save €${data.data.discount_amount.toFixed(2)}`;
+            couponMsg.className = 'text-xs mt-1.5 text-green-400';
+            couponCodeInput.disabled = true;
+            applyCouponBtn.textContent = 'Remove';
+            applyCouponBtn.disabled = false;
+
+            // Replace click handler with remove logic
+            applyCouponBtn.removeEventListener('click', handleApply);
+            applyCouponBtn.addEventListener('click', function handleRemove() {
+              appliedCoupon = null;
+              couponCodeInput.disabled = false;
+              couponCodeInput.value = '';
+              couponMsg.className = 'text-xs mt-1.5 hidden';
+              applyCouponBtn.textContent = 'Apply';
+              applyCouponBtn.removeEventListener('click', handleRemove);
+              applyCouponBtn.addEventListener('click', handleApply);
+              updateTotals();
+            });
+            updateTotals();
+          } else {
+            couponMsg.textContent = data.message;
+            couponMsg.className = 'text-xs mt-1.5 text-red-400';
+          }
+        } catch (err) {
+          couponMsg.textContent = 'Could not validate coupon. Try again.';
+          couponMsg.className = 'text-xs mt-1.5 text-red-400';
+        } finally {
+          if (applyCouponBtn.textContent === '...') {
+            applyCouponBtn.disabled = false;
+            applyCouponBtn.textContent = 'Apply';
+          }
+        }
+      });
+    }
+
+    orderTypeRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        lucide.createIcons();
+        if (e.target.value === 'delivery') {
+          deliveryAddressSection.classList.remove('hidden');
+          deliveryFeeRow.classList.remove('hidden');
+          currentDeliveryFee = DELIVERY_FEE;
+          orderTypeMessage.textContent = 'Your food will be delivered in 30-45 minutes';
+        } else {
+          deliveryAddressSection.classList.add('hidden');
+          deliveryFeeRow.classList.add('hidden');
+          currentDeliveryFee = 0;
+          orderTypeMessage.textContent = 'Your food will be ready for pickup in 15-20 minutes';
+        }
+        updateTotals();
+      });
+    });
+
+    // ============================================
+    // PAYMENT METHOD TOGGLE
+    // ============================================
+    const paymentRadios = document.querySelectorAll('input[name="payment"]');
+    const cardDetailsSection = document.getElementById('cardDetailsSection');
+    const applePayButtonContainer = document.getElementById('applePayButtonContainer');
+    const googlePayButtonContainer = document.getElementById('googlePayButtonContainer');
+
+    paymentRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        lucide.createIcons();
+
+        // Hide all payment-specific sections
+        cardDetailsSection.classList.add('hidden');
+        expressButtonContainer.classList.add('hidden');
+
+        // Show relevant section based on selection
+        if (e.target.value === 'card') {
+          cardDetailsSection.classList.remove('hidden');
+          // Mount Stripe card element
+          setTimeout(() => {
+            cardElement.mount('#card-element');
+            lucide.createIcons();
+          }, 100);
+        } else if (e.target.value === 'express') {
+          expressButtonContainer.classList.remove('hidden');
+        }
+      });
+    });
+
+    // ============================================
+    // STRIPE CARD PAYMENT
+    // ============================================
+    cardElement.on('change', (event) => {
+      const displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+        displayError.classList.remove('hidden');
+      } else {
+        displayError.textContent = '';
+        displayError.classList.add('hidden');
+      }
+    });
+
+    async function handleStripePayment() {
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+      });
+
+      if (error) {
+        const displayError = document.getElementById('card-errors');
+        displayError.textContent = error.message;
+        displayError.classList.remove('hidden');
+        return null; // Return null so order stops processing
+      } else {
+        return paymentMethod.id; // Return token for backend
+      }
+    }
+
+
+
+    // ============================================
+    // PLACE ORDER BUTTON
+    // ============================================
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    const successModal = document.getElementById('successModal');
+    const toast = document.getElementById('toast');
+
+    placeOrderBtn.addEventListener('click', async () => {
+      if (cart.length === 0) {
+        showToast("Your cart is empty!");
+        return;
+      }
+
+      // Validate Terms & Conditions consent
+      const termsCheckbox = document.getElementById('termsConsent');
+      if (termsCheckbox && !termsCheckbox.checked) {
+        showToast("Please agree to Terms & Conditions and Privacy Policy");
+        termsCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Validate form
+      const form = document.getElementById('checkoutForm');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      // Minimum Delivery Order Validation
+      const delivery = document.querySelector('input[name="orderType"]:checked').value === 'delivery';
+      const currentSubtotal = parseFloat(document.getElementById("subtotal").textContent.replace('€', ''));
+      if (delivery && currentSubtotal < 15.00) {
+        alert('Delivery is only available for orders over €15.00. Please add more items or switch your order to Pickup.');
+        return;
+      }
+
+      // Get selected payment method
+      const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+
+      // Handle different payment methods
+      let stripePaymentMethodId = null;
+
+      if (selectedPayment === 'card') {
+        stripePaymentMethodId = await handleStripePayment();
+        if (!stripePaymentMethodId) return; // Halts if card errors
+      } else if (selectedPayment === 'express') {
+        alert('Please use the Express Checkout button above to complete your Apple/Google Pay purchase.');
+        return;
+      }
+
+      // Construct order payload
+      let specialInstElem = document.getElementById("specialInstructions");
+      let specialInst = specialInstElem ? specialInstElem.value.trim() : "";
+
+      let finalNotes = "";
+
+      if (delivery) {
+        let addressParts = [
+          document.getElementById("street").value.trim(),
+          document.getElementById("city").value.trim(),
+          document.getElementById("postal").value.trim()
+        ].filter(x => x).join(", ");
+
+        let deliveryNotes = document.getElementById("notes").value.trim();
+
+        if (addressParts) finalNotes += "Delivery Address: " + addressParts + "\n";
+        if (deliveryNotes) finalNotes += "Delivery Note: " + deliveryNotes + "\n";
+      }
+
+      if (specialInst) {
+        finalNotes += "Special Instructions: " + specialInst;
+      }
+
+      finalNotes = finalNotes.trim();
+
+      const payload = {
+        name: document.getElementById("firstName").value + " " + document.getElementById("lastName").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        notes: finalNotes,
+        cart: cart,
+        payment_method_id: stripePaymentMethodId,
+        order_type: delivery ? 'delivery' : 'pickup',
+        coupon: appliedCoupon ? { offer_id: appliedCoupon.offer_id, code: document.getElementById('couponCode').value.trim(), discount_amount: appliedCoupon.discount_amount } : null
+      };
+
+      const originalText = placeOrderBtn.innerHTML;
+      try {
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.innerHTML = "Processing...";
+
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+        const res = await fetch("create_order.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify(payload)
+        });
+
+        clearTimeout(timeoutId);
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.removeItem("cart");
+          showSuccessModal(data.data.order_id);
+        } else {
+          alert("Validation failed: " + data.message);
+          placeOrderBtn.disabled = false;
+          placeOrderBtn.innerHTML = originalText;
+        }
+
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          alert("The server took too long to respond. Please check your internet connection before retrying to prevent double charges.");
+        } else {
+          alert("Server error processing order: " + err.message);
+        }
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.innerHTML = originalText;
+      }
+    });
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.innerText = message;
+      toast.classList.remove("translate-y-10", "opacity-0", "pointer-events-none");
+      toast.classList.add("translate-y-0", "opacity-100");
+      setTimeout(() => {
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("translate-y-10", "opacity-0", "pointer-events-none");
+      }, 3000);
+    }
+
+    function showSuccessModal(backendOrderId) {
+      const orderNum = backendOrderId || Math.floor(10000 + Math.random() * 90000);
+      document.getElementById('orderNumber').textContent = '#' + orderNum;
+
+      // Show success modal
+      successModal.classList.remove('opacity-0', 'pointer-events-none');
+      successModal.querySelector('.bg-gradient-to-br').classList.remove('scale-95');
+      successModal.querySelector('.bg-gradient-to-br').classList.add('scale-100');
+
+      // Re-initialize icons in the modal
+      setTimeout(() => {
+        lucide.createIcons();
+      }, 100);
+
+      // Show toast
+      toast.classList.remove("translate-y-10", "opacity-0", "pointer-events-none");
+      toast.classList.add("translate-y-0", "opacity-100");
+      setTimeout(() => {
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("translate-y-10", "opacity-0", "pointer-events-none");
+      }, 3000);
+    }
+
+    // ============================================
+    // SMOOTH SCROLLING
+    // ============================================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // ============================================
+    // MOBILE MENU TOGGLE
+    // ============================================
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
+  </script>
+  <script src="shared-components.js"></script>
+
+</body>
+
+</html>

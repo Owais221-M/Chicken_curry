@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed | Chicken Curry Messina</title>
+  <meta name="description" content="Your order at Chicken Curry Messina has been confirmed.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'spice-gold': '#D4AF37',
+            'warm-amber': '#FF8C00',
+            'deep-curry': '#B8860B',
+            'rich-brown': '#8B4513'
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-black text-white font-sans min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-spice-gold/20">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="home.html" class="flex items-center">
+        <div class="text-2xl font-bold text-spice-gold">Chicken Curry</div>
+        <div class="hidden sm:block ml-2 text-sm text-gray-300">Messina</div>
+      </a>
+      <nav class="hidden md:flex space-x-8">
+        <a href="home.html" class="text-gray-300 hover:text-spice-gold transition-colors">Home</a>
+        <a href="menu.html" class="text-gray-300 hover:text-spice-gold transition-colors">Menu</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex items-center justify-center pt-24 pb-16 px-4">
+    <div class="max-w-lg w-full text-center">
+
+      <!-- Success Animation -->
+      <div
+        class="w-24 h-24 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_40px_rgba(212,175,55,0.4)] animate-bounce">
+        <i data-lucide="check" class="w-12 h-12 text-black"></i>
+      </div>
+
+      <h1
+        class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">
+        Order Confirmed!
+      </h1>
+
+      <p class="text-gray-300 text-lg mb-8">
+        Thank you for your order! Our kitchen is preparing your delicious meal right now.
+      </p>
+
+      <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-8 mb-8">
+        <div class="space-y-4 text-left">
+          <div class="flex items-center gap-3">
+            <i data-lucide="clock" class="w-5 h-5 text-spice-gold"></i>
+            <div>
+              <p class="font-semibold text-white">Estimated Time</p>
+              <p class="text-sm text-gray-400">Pickup: 15-20 min | Delivery: 30-45 min</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <i data-lucide="phone" class="w-5 h-5 text-spice-gold"></i>
+            <div>
+              <p class="font-semibold text-white">Questions?</p>
+              <p class="text-sm text-gray-400">Call us and we'll help you out</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="track-order.html"
+          class="bg-gradient-to-r from-amber-500 to-orange-500 text-black px-8 py-3 rounded-full font-semibold hover:scale-105 transition-all shadow-lg">
+          Track Your Order
+        </a>
+        <a href="menu.html"
+          class="border-2 border-spice-gold text-spice-gold px-8 py-3 rounded-full font-semibold hover:bg-spice-gold hover:text-black transition-all">
+          Order More
+        </a>
+        <a href="home.html"
+          class="border-2 border-gray-700 text-gray-300 px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition-all">
+          Go Home
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
+    <p class="mb-2">&copy; 2026 Chicken Curry Messina. All rights reserved.</p>
+    <div class="space-x-4">
+      <a href="privacy.html" class="hover:text-spice-gold transition">Privacy Policy</a>
+      <a href="terms.html" class="hover:text-spice-gold transition">Terms &amp; Conditions</a>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="shared-components.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # PHP Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chicken-curry-app
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+      - /var/www/html/vendor
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - chicken-curry-network
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD:-changeme}
+      - DB_NAME=chicken_curry_db
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-sk_test_YOUR_SECRET_KEY_HERE}
+      - APP_URL=${APP_URL:-http://localhost:8080}
+
+  # MySQL/MariaDB Database
+  db:
+    image: mariadb:10.4
+    container_name: chicken-curry-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-changeme}
+      MYSQL_DATABASE: chicken_curry_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: ${DB_PASSWORD:-changeme}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./chicken_curry_db.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    networks:
+      - chicken-curry-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 5s
+
+  # phpMyAdmin (optional - for database management)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: chicken-curry-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${DB_PASSWORD:-changeme}
+    depends_on:
+      - db
+    networks:
+      - chicken-curry-network
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  chicken-curry-network:
+    driver: bridge

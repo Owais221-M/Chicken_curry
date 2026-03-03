@@ -1,0 +1,20 @@
+# robots.txt — Chicken Curry Messina
+# Controls which pages search engine crawlers can access.
+# Update the Sitemap URL below with your real domain.
+
+User-agent: *
+Allow: /
+
+# Pages that should not be indexed
+Disallow: /admin.php
+Disallow: /create_order.php
+Disallow: /get_menu.php
+Disallow: /get_kebab_data.php
+Disallow: /get_offers.php
+Disallow: /db.php
+Disallow: /helpers.php
+Disallow: /checkout.html
+Disallow: /success.html
+
+# Sitemap location (update with real domain)
+Sitemap: https://chickencurrymessina.com/sitemap.xml
