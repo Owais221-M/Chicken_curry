@@ -69,9 +69,75 @@
         Order Confirmed!
       </h1>
 
-      <p class="text-gray-300 text-lg mb-8">
+      <p class="text-gray-300 text-lg mb-4">
         Thank you for your order! Our kitchen is preparing your delicious meal right now.
       </p>
+
+      <!-- Order Number -->
+      <div id="orderNumBox" class="bg-black/50 rounded-xl p-4 mb-6 hidden">
+        <p class="text-sm text-gray-400 mb-1">Your Order Number</p>
+        <p id="displayOrderNum" class="text-3xl font-bold text-spice-gold">#---</p>
+      </div>
+
+      <!-- Receipt -->
+      <div id="receiptBox" class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 mb-6 text-left hidden">
+        <h3 class="text-sm font-semibold text-spice-gold uppercase tracking-wider mb-3 flex items-center gap-2">
+          <i data-lucide="receipt" class="w-4 h-4"></i> Your Receipt
+        </h3>
+        <div id="receiptItems" class="space-y-2 text-sm max-h-48 overflow-y-auto"></div>
+        <div class="border-t border-gray-700 mt-3 pt-3 flex justify-between font-bold">
+          <span class="text-gray-300">Total Paid</span>
+          <span id="receiptTotal" class="text-spice-gold text-lg">€0.00</span>
+        </div>
+      </div>
+
+      <!-- Status Steps -->
+      <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-6 mb-6">
+        <h3 class="text-sm font-semibold text-spice-gold uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i data-lucide="truck" class="w-4 h-4"></i> Order Progress
+        </h3>
+        <div class="space-y-3 text-left text-sm">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-spice-gold/20 border border-spice-gold flex items-center justify-center">
+              <i data-lucide="check" class="w-4 h-4 text-spice-gold"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-white">Order Received</p>
+              <p class="text-xs text-gray-500">We got your order</p>
+            </div>
+          </div>
+          <div class="ml-4 w-px h-4 bg-gray-700"></div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center">
+              <i data-lucide="chef-hat" class="w-4 h-4 text-gray-500"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-400">Preparing</p>
+              <p class="text-xs text-gray-600">Our chefs are cooking your food</p>
+            </div>
+          </div>
+          <div class="ml-4 w-px h-4 bg-gray-700"></div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center">
+              <i data-lucide="package-check" class="w-4 h-4 text-gray-500"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-400">Ready</p>
+              <p class="text-xs text-gray-600" id="readyText">Ready for pickup</p>
+            </div>
+          </div>
+          <div class="ml-4 w-px h-4 bg-gray-700"></div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center">
+              <i data-lucide="party-popper" class="w-4 h-4 text-gray-500"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-400">Completed</p>
+              <p class="text-xs text-gray-600">Enjoy your meal!</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="bg-gradient-to-br from-gray-900/70 to-black border border-spice-gold/20 rounded-3xl p-8 mb-8">
         <div class="space-y-4 text-left">
@@ -93,17 +159,13 @@
       </div>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="track-order.html"
+        <a id="trackLink" href="track-order.html"
           class="bg-gradient-to-r from-amber-500 to-orange-500 text-black px-8 py-3 rounded-full font-semibold hover:scale-105 transition-all shadow-lg">
-          Track Your Order
+          Track Your Order Live
         </a>
         <a href="menu.html"
           class="border-2 border-spice-gold text-spice-gold px-8 py-3 rounded-full font-semibold hover:bg-spice-gold hover:text-black transition-all">
           Order More
-        </a>
-        <a href="home.html"
-          class="border-2 border-gray-700 text-gray-300 px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition-all">
-          Go Home
         </a>
       </div>
     </div>
@@ -120,6 +182,51 @@
 
   <script>
     lucide.createIcons();
+
+    // Populate receipt & tracking from sessionStorage or URL params
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get('order_id') || sessionStorage.getItem('lastOrderId');
+      const phone = sessionStorage.getItem('lastOrderPhone') || '';
+      const cartJson = sessionStorage.getItem('lastOrderCart');
+      const total = sessionStorage.getItem('lastOrderTotal');
+      const orderType = sessionStorage.getItem('lastOrderType');
+
+      // Show order number
+      if (orderId) {
+        document.getElementById('orderNumBox').classList.remove('hidden');
+        document.getElementById('displayOrderNum').textContent = '#' + orderId;
+        document.getElementById('trackLink').href =
+          'track-order.html?id=' + orderId + '&phone=' + encodeURIComponent(phone);
+      }
+
+      // Show receipt
+      if (cartJson) {
+        try {
+          const cart = JSON.parse(cartJson);
+          const receiptItems = document.getElementById('receiptItems');
+          cart.forEach(function (item) {
+            const row = document.createElement('div');
+            row.className = 'flex justify-between text-gray-300';
+            const qty = item.quantity || 1;
+            const price = (item.price * qty).toFixed(2);
+            row.innerHTML =
+              '<span>' + qty + 'x ' + item.name + '</span><span class="text-spice-gold">€' + price + '</span>';
+            receiptItems.appendChild(row);
+          });
+          document.getElementById('receiptBox').classList.remove('hidden');
+        } catch (e) { /* ignore parse errors */ }
+      }
+
+      if (total) {
+        document.getElementById('receiptTotal').textContent = '€' + parseFloat(total).toFixed(2);
+      }
+
+      // Adjust ready text based on order type
+      if (orderType === 'delivery') {
+        document.getElementById('readyText').textContent = 'Out for delivery';
+      }
+    })();
   </script>
   <script src="shared-components.js"></script>
 

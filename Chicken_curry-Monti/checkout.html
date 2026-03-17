@@ -502,9 +502,9 @@
 
   <!-- Success Modal -->
   <div id="successModal"
-    class="fixed inset-0 bg-black/80 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+    class="fixed inset-0 bg-black/80 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 z-50 overflow-y-auto py-8">
     <div
-      class="bg-gradient-to-br from-gray-900 to-black border border-spice-gold/20 rounded-3xl p-10 text-center max-w-md mx-4 transform scale-95 transition-transform duration-300">
+      class="bg-gradient-to-br from-gray-900 to-black border border-spice-gold/20 rounded-3xl p-8 md:p-10 text-center max-w-md mx-4 transform scale-95 transition-transform duration-300">
       <div
         class="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
         <i data-lucide="check" class="w-10 h-10 text-black"></i>
@@ -518,14 +518,41 @@
         <p class="text-sm text-gray-400 mb-1">Order Number</p>
         <p id="orderNumber" class="text-2xl font-bold text-spice-gold">#12345</p>
       </div>
+
+      <!-- Receipt Summary -->
+      <div id="receiptSummary" class="bg-black/30 border border-gray-700/50 rounded-xl p-4 mb-6 text-left">
+        <h3 class="text-sm font-semibold text-spice-gold uppercase tracking-wider mb-3">Your Receipt</h3>
+        <div id="receiptItems" class="space-y-2 text-sm max-h-40 overflow-y-auto"></div>
+        <div class="border-t border-gray-700 mt-3 pt-3 flex justify-between font-bold">
+          <span class="text-gray-300">Total</span>
+          <span id="receiptTotal" class="text-spice-gold text-lg">€0.00</span>
+        </div>
+      </div>
+
+      <!-- Status Reminder -->
+      <div class="bg-spice-gold/10 border border-spice-gold/20 rounded-xl p-4 mb-6 text-left">
+        <div class="flex items-start gap-3">
+          <i data-lucide="info" class="w-5 h-5 text-spice-gold flex-shrink-0 mt-0.5"></i>
+          <div class="text-sm text-gray-300">
+            <p class="font-semibold text-white mb-1">What happens next?</p>
+            <div class="space-y-1 text-xs text-gray-400">
+              <p>🔔 <strong class="text-gray-300">Received</strong> — We got your order</p>
+              <p>👨‍🍳 <strong class="text-gray-300">Preparing</strong> — Our chefs are cooking</p>
+              <p>✅ <strong class="text-gray-300">Ready</strong> — Come pick it up / on the way</p>
+              <p>🎉 <strong class="text-gray-300">Completed</strong> — Enjoy your meal!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="space-y-3">
-        <button onclick="window.location.href='menu.html'"
+        <button id="trackOrderBtn"
           class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-black px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all">
-          Back to Menu
+          Track Your Order Live
         </button>
-        <button onclick="window.location.href='home.html'"
+        <button onclick="window.location.href='menu.html'"
           class="w-full border-2 border-spice-gold text-spice-gold px-6 py-3 rounded-xl font-semibold hover:bg-spice-gold hover:text-black transition-all">
-          Go to Home
+          Back to Menu
         </button>
       </div>
     </div>
@@ -1094,6 +1121,12 @@
         const data = await res.json();
 
         if (data.success) {
+          // Save order info for receipt display before clearing cart
+          sessionStorage.setItem('lastOrderCart', JSON.stringify(cart));
+          sessionStorage.setItem('lastOrderTotal', document.getElementById("totalPrice").textContent.replace('€', ''));
+          sessionStorage.setItem('lastOrderPhone', document.getElementById("phone").value);
+          sessionStorage.setItem('lastOrderType', delivery ? 'delivery' : 'pickup');
+
           localStorage.removeItem("cart");
           showSuccessModal(data.data.order_id);
         } else {
@@ -1126,7 +1159,41 @@
 
     function showSuccessModal(backendOrderId) {
       const orderNum = backendOrderId || Math.floor(10000 + Math.random() * 90000);
+      sessionStorage.setItem('lastOrderId', orderNum);
       document.getElementById('orderNumber').textContent = '#' + orderNum;
+
+      // Populate receipt items from cart (before it was cleared)
+      const receiptItems = document.getElementById('receiptItems');
+      const savedCart = JSON.parse(sessionStorage.getItem('lastOrderCart') || '[]');
+      const savedTotal = sessionStorage.getItem('lastOrderTotal') || '0.00';
+      const savedPhone = sessionStorage.getItem('lastOrderPhone') || '';
+      const savedOrderType = sessionStorage.getItem('lastOrderType') || 'pickup';
+
+      receiptItems.innerHTML = '';
+      savedCart.forEach(item => {
+        const itemTotal = (parseFloat(item.price) * parseInt(item.qty)).toFixed(2);
+        const sizeText = item.size ? ` (${item.size})` : '';
+        receiptItems.innerHTML += `
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-800/50">
+            <span class="text-gray-300">${item.qty}x ${item.name}${sizeText}</span>
+            <span class="text-spice-gold font-medium">€${itemTotal}</span>
+          </div>`;
+      });
+      document.getElementById('receiptTotal').textContent = '€' + parseFloat(savedTotal).toFixed(2);
+
+      // Update order type message
+      const orderTypeMsg = document.getElementById('orderTypeMessage');
+      if (savedOrderType === 'delivery') {
+        orderTypeMsg.textContent = 'Your food will be delivered in 30-45 minutes';
+      } else {
+        orderTypeMsg.textContent = 'Your food will be ready for pickup in 15-20 minutes';
+      }
+
+      // Wire Track Order button
+      const trackOrderBtn = document.getElementById('trackOrderBtn');
+      trackOrderBtn.onclick = () => {
+        window.location.href = `track-order.html?id=${orderNum}&phone=${encodeURIComponent(savedPhone)}`;
+      };
 
       // Show success modal
       successModal.classList.remove('opacity-0', 'pointer-events-none');

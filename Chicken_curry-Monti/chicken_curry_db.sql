@@ -72,12 +72,12 @@ CREATE TABLE `ingredients` (
 --
 
 INSERT INTO `ingredients` (`id`, `name`, `price`, `icon`, `image_url`, `is_active`) VALUES
-(1, 'Tomato', 0.50, '🍅', 'images/tomato.webp', 1),
-(2, 'Onion', 0.30, '🧅', 'images/onion.webp', 1),
-(3, 'Lettuce', 0.40, '🥬', 'images/lettuce.webp', 1),
-(4, 'Corn', 0.40, '🌽', 'images/corn.webp', 1),
-(5, 'Capsicum', 0.50, '🫑', 'images/capsicum.webp', 1),
-(6, 'Carrot', 0.30, '🥕', 'images/carrot.webp', 1);
+(1, 'Tomato', 0.00, '🍅', 'images/tomato.webp', 1),
+(2, 'Onion', 0.00, '🧅', 'images/onion.webp', 1),
+(3, 'Lettuce', 0.00, '🥬', 'images/lettuce.webp', 1),
+(4, 'Corn', 0.00, '🌽', 'images/corn.webp', 1),
+(5, 'Capsicum', 0.00, '🫑', 'images/capsicum.webp', 1),
+(6, 'Carrot', 0.00, '🥕', 'images/carrot.webp', 1);
 
 -- --------------------------------------------------------
 
@@ -109,7 +109,8 @@ INSERT INTO `menu_items` (`id`, `name`, `category`, `base_price`, `image_url`, `
 (2, 'Mutton Biryani', 'biryani', 11.00, 'images/mutton_biryani.webp', '25 min', 3, 0, 1, 1, 0, 'Gluten, Dairy'),
 (3, 'Beef Biryani', 'biryani', 10.00, 'images/beef_biryani.webp', '22 min', 2, 0, 1, 1, 0, 'Gluten, Dairy'),
 (4, 'Chicken Curry', 'curry', 8.00, 'images/chicken_curry.webp', '18 min', 2, 1, 1, 1, 1, 'Dairy'),
-(5, 'Beef Curry', 'curry', 9.50, 'images/beef_curry.webp', '20 min', 3, 0, 1, 1, 1, 'Dairy');
+(5, 'Beef Curry', 'curry', 9.50, 'images/beef_curry.webp', '20 min', 3, 0, 1, 1, 1, 'Dairy'),
+(6, 'Mutton Curry', 'curry', 10.50, 'images/mutton_curry.webp', '25 min', 3, 0, 1, 1, 1, 'Dairy');
 
 -- --------------------------------------------------------
 

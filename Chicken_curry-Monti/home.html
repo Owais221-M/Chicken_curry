@@ -317,17 +317,12 @@
 
         <div class="text-center mb-12">
           <div class="inline-flex flex-wrap gap-2 mb-6">
-            <button class="bg-amber-500 text-black font-semibold py-2 px-6 rounded-full">All</button>
-            <button
-              class="bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700">Curries</button>
-            <button
-              class="bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700">Biryani</button>
-            <button
-              class="bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700">Kebabs</button>
-            <button class="bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700">Rice
-              Dishes</button>
-            <button
-              class="bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700">Vegetarian</button>
+            <button onclick="filterMenu('all')" class="menu-filter-btn bg-amber-500 text-black font-semibold py-2 px-6 rounded-full" data-filter="all">All</button>
+            <button onclick="filterMenu('curry')" class="menu-filter-btn bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700" data-filter="curry">Curries</button>
+            <button onclick="filterMenu('biryani')" class="menu-filter-btn bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700" data-filter="biryani">Biryani</button>
+            <button onclick="filterMenu('kebab')" class="menu-filter-btn bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700" data-filter="kebab">Kebabs</button>
+            <button onclick="filterMenu('rice')" class="menu-filter-btn bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700" data-filter="rice">Rice Dishes</button>
+            <button onclick="filterMenu('vegetarian')" class="menu-filter-btn bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700" data-filter="vegetarian">Vegetarian</button>
           </div>
         </div>
 
@@ -355,8 +350,8 @@
           </div>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-12">
-          <!-- Menu items would go here -->
-          <div class="bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
+          <!-- Menu items -->
+          <div class="menu-card bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50" data-category="curry">
             <div class="flex justify-between items-start mb-4">
               <h3 class="text-xl font-bold text-white">Chicken Curry</h3>
               <span class="text-amber-400 font-bold">€8.00</span>
@@ -364,7 +359,23 @@
             <p class="text-gray-300 mb-4">Tender chicken in rich aromatic curry sauce</p>
           </div>
 
-          <div class="bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
+          <div class="menu-card bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50" data-category="curry">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-xl font-bold text-white">Mutton Curry</h3>
+              <span class="text-amber-400 font-bold">€10.50</span>
+            </div>
+            <p class="text-gray-300 mb-4">Slow-cooked mutton in rich aromatic curry sauce</p>
+          </div>
+
+          <div class="menu-card bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50" data-category="curry">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-xl font-bold text-white">Beef Curry</h3>
+              <span class="text-amber-400 font-bold">€9.50</span>
+            </div>
+            <p class="text-gray-300 mb-4">Tender beef simmered in traditional curry spices</p>
+          </div>
+
+          <div class="menu-card bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50" data-category="biryani">
             <div class="flex justify-between items-start mb-4">
               <h3 class="text-xl font-bold text-white">Chicken Biryani</h3>
               <span class="text-amber-400 font-bold">€9.00</span>
@@ -372,7 +383,23 @@
             <p class="text-gray-300 mb-4">Fragrant basmati rice with chicken and spices</p>
           </div>
 
-          <div class="bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
+          <div class="menu-card bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50" data-category="biryani">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-xl font-bold text-white">Mutton Biryani</h3>
+              <span class="text-amber-400 font-bold">€11.00</span>
+            </div>
+            <p class="text-gray-300 mb-4">Aromatic basmati rice with tender mutton pieces</p>
+          </div>
+
+          <div class="menu-card bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50" data-category="biryani">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-xl font-bold text-white">Beef Biryani</h3>
+              <span class="text-amber-400 font-bold">€10.00</span>
+            </div>
+            <p class="text-gray-300 mb-4">Fragrant basmati rice with seasoned beef</p>
+          </div>
+
+          <div class="menu-card bg-gray-800/50 p-6 rounded-2xl border border-gray-700/50" data-category="kebab">
             <div class="flex justify-between items-start mb-4">
               <h3 class="text-xl font-bold text-white">Grilled Kebabs</h3>
               <span class="text-amber-400 font-bold">from €6.00</span>
@@ -1105,6 +1132,28 @@
         });
       });
     }
+    // Menu filter buttons
+    function filterMenu(category) {
+      const cards = document.querySelectorAll('.menu-card');
+      const btns = document.querySelectorAll('.menu-filter-btn');
+
+      btns.forEach(btn => {
+        if (btn.dataset.filter === category) {
+          btn.className = 'menu-filter-btn bg-amber-500 text-black font-semibold py-2 px-6 rounded-full';
+        } else {
+          btn.className = 'menu-filter-btn bg-gray-800 text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-700';
+        }
+      });
+
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
     // Opening Hours Check (12:00 - 22:00 local time)
     (function () {
       const now = new Date();

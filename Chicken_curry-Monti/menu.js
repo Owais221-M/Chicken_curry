@@ -200,9 +200,7 @@ function renderIngredients() {
 
   ingredients.forEach(ing => {
     const btn = document.createElement("button");
-    const priceDisplay = parseFloat(ing.price) > 0
-      ? `+€${parseFloat(ing.price).toFixed(2)}`
-      : "Free";
+    const priceDisplay = "Free";
 
     if (ing.image_url) {
       // Rich image tile layout
@@ -414,7 +412,7 @@ function updatePrice() {
   if (!kebabPriceEl || !selectedSize) return;
 
   let total = parseFloat(kebabBasePrice);
-  selectedIngredients.forEach(i => { total += parseFloat(i.price) || 0; });
+  // Ingredients are free — no extra charge
   selectedSauces.forEach(s => { total += parseFloat(s.price) || 0; });
 
   kebabPriceEl.innerText = `€${total.toFixed(2)}`;
